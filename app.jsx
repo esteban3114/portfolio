@@ -101,8 +101,8 @@ const SECTIONS = {
     title: "CONTACT — ESTABLISH CONNECTION",
     lines: () => [
       head("CHANNELS"),
-      row("41", "GITHUB", PROFILE.github, "blueval"),
-      row("42", "EMAIL", PROFILE.email, "blueval"),
+      [seg("41) ", "num"), seg(pad("GITHUB", 20), "label"), { t: PROFILE.github, c: "blueval", href: "https://" + PROFILE.github, target: "_blank" }],
+      [seg("42) ", "num"), seg(pad("EMAIL", 20), "label"), { t: PROFILE.email, c: "blueval", href: "mailto:" + PROFILE.email }],
       blank(),
       head("STATUS"),
       row("43", "AVAILABILITY", "Open to collaboration", "pos"),
@@ -140,7 +140,7 @@ function useTypewriter(lines, speedMs, deps) {
   return { count, done: count >= total };
 }
 
-function TypedLines({ lines, count }) {
+function TypedLines({ lines, count, done }) {
   let remaining = count;
   const out = [];
   let cursorPlaced = false;
@@ -154,16 +154,29 @@ function TypedLines({ lines, count }) {
       const show = s.t.slice(0, remaining);
       remaining -= s.t.length;
       if (show.length > 0) lineHasContent = true;
-      parts.push(<span key={si} className={"s-" + s.c}>{show}</span>);
+      if (s.href) {
+        parts.push(
+          <a key={si} className={"s-" + s.c} href={s.href}
+             target={s.target || "_self"}
+             rel={s.target === "_blank" ? "noopener noreferrer" : undefined}
+             style={{ textDecoration: "underline", cursor: "pointer" }}>
+            {show}
+          </a>
+        );
+      } else {
+        parts.push(<span key={si} className={"s-" + s.c}>{show}</span>);
+      }
     }
     remaining -= 1;
     let showCursor = false;
     if (!cursorPlaced && remaining < 0) { showCursor = true; cursorPlaced = true; }
+    // When animation is done, remaining lands at exactly 0 on the last line — force cursor
+    if (done && !cursorPlaced && remaining === 0) { showCursor = true; cursorPlaced = true; }
     out.push(
       <div className="tline" key={li}>
         {parts}
         {showCursor && <span className="cursor blink">█</span>}
-        {(!lineHasContent && line.length <= 1) ? " " : null}
+        {(!lineHasContent && line.length <= 1) ? " " : null}
       </div>
     );
     if (cursorPlaced && remaining < 0) break;
@@ -379,11 +392,11 @@ function HintBar() {
 function Screen({ code, speed }) {
   const sec = SECTIONS[code];
   const lines = sec.lines();
-  const { count } = useTypewriter(lines, speed, [code, speed]);
+  const { count, done } = useTypewriter(lines, speed, [code, speed]);
   return (
     <div className="screen">
       <div className="screen-head">{sec.title}</div>
-      <TypedLines lines={lines} count={count} />
+      <TypedLines lines={lines} count={count} done={done} />
     </div>
   );
 }

@@ -1,13 +1,18 @@
 {
   "name": "portfolio",
   "version": "1.0.0",
-  "description": "",
+  "description": "Terminal-style developer portfolio for Esteban — Python developer & trading bot builder.",
   "main": "index.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "serve": "npx serve ."
+  },
+  "keywords": ["portfolio", "developer", "python", "terminal"],
+  "author": "Esteban <este3112008@gmail.com>",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.1",
