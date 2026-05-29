@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-const BASE = 'https://vadim.me';
+const BASE = 'https://este-dls.com';
 
 // ─── Boot screen ───────────────────────────────────────────────────────────
 
