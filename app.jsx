@@ -250,7 +250,7 @@ function FunctionBar() {
     <div className="fbar">
       {FKEYS_L.map((k) => <span key={k.t} className={"fk " + k.c}>{k.t}</span>)}
       {FKEYS_G.map((k) => <span key={k} className="fk fk-green">{k}</span>)}
-      <span className="fbar-tabs">Tabs are here!</span>
+      <span className="fbar-tabs">ESTBN</span>
       <span className="fbar-opt">Options</span>
     </div>
   );
