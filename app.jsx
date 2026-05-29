@@ -179,7 +179,7 @@ const BOOT_LINES = [
   { t: "(C) 2026 ESTEBAN.  ALL RIGHTS RESERVED.", c: "boot-dim" },
   { t: "", c: "" },
   { t: "Initializing system............ OK", c: "boot-ok" },
-  { t: "Loading esteban.dev............ OK", c: "boot-ok" },
+  { t: "Loading vadim.me............... OK", c: "boot-ok" },
   { t: "Connecting to GitHub........... OK", c: "boot-ok" },
   { t: "Mounting /projects............. OK", c: "boot-ok" },
   { t: "Loading runtime python 3.12.... OK", c: "boot-ok" },

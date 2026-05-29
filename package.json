@@ -1,0 +1,31 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "playwright": "^1.60.0"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "playwright-core": "^1.60.0",
+    "undici-types": "^7.24.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esteban3114/portfolio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/esteban3114/portfolio/issues"
+  },
+  "homepage": "https://github.com/esteban3114/portfolio#readme"
+}
