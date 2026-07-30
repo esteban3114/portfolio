@@ -9,7 +9,9 @@
      scanning the tag on the bag, not found by accident. -->
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
-<meta name="theme-color" content="#D25A22">
+<!-- Matches the pale panel, not the orange field: on a phone the browser
+     chrome sits against the bottom of the page, and that is the panel. -->
+<meta name="theme-color" content="#EAE6DC">
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23D25A22'/><rect x='9' y='11' width='14' height='12' rx='2' fill='none' stroke='%231B1310' stroke-width='2.4'/><path d='M13 11V8h6v3' fill='none' stroke='%231B1310' stroke-width='2.4'/></svg>">
 
@@ -36,7 +38,17 @@
 
 *,*::before,*::after{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
-html{-webkit-text-size-adjust:100%;}
+
+/* The canvas background paints everything outside the body box: behind
+   the browser chrome, the home-indicator strip, and overscroll. The
+   panel is what reaches the bottom of the screen, so the canvas has to
+   be the panel's colour — otherwise an orange band shows under the
+   address bar on iOS. The wide layout overrides this back to orange,
+   where the panel is a floating card. */
+html{
+  -webkit-text-size-adjust:100%;
+  background:var(--stock);
+}
 
 /* .act sets display:flex, which would beat the UA stylesheet's
    [hidden]{display:none}. Needed for the contact-mode switch. */
@@ -264,8 +276,10 @@ a:focus-visible,select:focus-visible{
   padding-top:.5rem;
 }
 
-/* Wider screens: hold the composition instead of stretching it. */
+/* Wider screens: hold the composition instead of stretching it. The panel
+   becomes a floating card, so the canvas goes back to the orange field. */
 @media (min-width:620px){
+  html{background:var(--signal);}
   body{align-items:center;}
   .bar,.head,.panel{width:100%;max-width:34rem;}
   .panel{border-radius:14px;margin-bottom:var(--pad);}
@@ -358,98 +372,98 @@ var CONTACT = {
 /* ── Copy. English is the fallback for any unlisted language. ── */
 var STRINGS = {
   en:{label:"English",found:"Found",
-      pitch:"Thanks for picking it up. Send me one message and I'll come and get it — you don't need to give me any of your own details.",
+      pitch:"Thanks for picking it up. Send me a message and I'll come to you, wherever you are.",
       wa:"Message on WhatsApp",fastest:"Fastest",call:"Call",mail:"Email",
       waText:"Hi Esteban — I've found your bag.",
       mailSubject:"I found your bag",
       mailBody:"Hi Esteban — I've found your bag. Here's where it is:\n\n",
       tag:"Luggage tag"},
   fr:{label:"Français",found:"Trouvée",
-      pitch:"Merci de l'avoir ramassée. Un seul message et je viens la chercher — vous n'avez aucune information à me donner.",
+      pitch:"Merci de l'avoir ramassée. Envoyez-moi un message et je viens la chercher, où que vous soyez.",
       wa:"Écrire sur WhatsApp",fastest:"Le plus rapide",call:"Appeler",mail:"E-mail",
       waText:"Bonjour Esteban — j'ai trouvé votre valise.",
       mailSubject:"J'ai trouvé votre valise",
       mailBody:"Bonjour Esteban — j'ai trouvé votre valise. Voici où elle se trouve :\n\n",
       tag:"Étiquette bagage"},
   es:{label:"Español",found:"Encontrada",
-      pitch:"Gracias por recogerla. Envíame un solo mensaje y voy a buscarla — no necesitas darme ningún dato tuyo.",
+      pitch:"Gracias por recogerla. Mándame un mensaje y voy a buscarla, estés donde estés.",
       wa:"Escribir por WhatsApp",fastest:"Lo más rápido",call:"Llamar",mail:"Correo",
       waText:"Hola Esteban — he encontrado tu maleta.",
       mailSubject:"He encontrado tu maleta",
       mailBody:"Hola Esteban — he encontrado tu maleta. Está aquí:\n\n",
       tag:"Etiqueta de equipaje"},
   de:{label:"Deutsch",found:"Gefunden",
-      pitch:"Danke, dass Sie ihn aufgehoben haben. Eine Nachricht genügt, dann hole ich ihn ab — Sie müssen mir keine Ihrer Daten geben.",
+      pitch:"Danke, dass Sie ihn aufgehoben haben. Schreiben Sie mir kurz, dann hole ich ihn ab, wo auch immer Sie sind.",
       wa:"Auf WhatsApp schreiben",fastest:"Am schnellsten",call:"Anrufen",mail:"E-Mail",
       waText:"Hallo Esteban — ich habe Ihren Koffer gefunden.",
       mailSubject:"Ich habe Ihren Koffer gefunden",
       mailBody:"Hallo Esteban — ich habe Ihren Koffer gefunden. Er ist hier:\n\n",
       tag:"Gepäckanhänger"},
   it:{label:"Italiano",found:"Trovata",
-      pitch:"Grazie per averla raccolta. Mandami un solo messaggio e vengo a prenderla — non devi darmi nessun tuo dato.",
+      pitch:"Grazie per averla raccolta. Mandami un messaggio e vengo a prenderla, dovunque tu sia.",
       wa:"Scrivi su WhatsApp",fastest:"Il più rapido",call:"Chiama",mail:"Email",
       waText:"Ciao Esteban — ho trovato la tua valigia.",
       mailSubject:"Ho trovato la tua valigia",
       mailBody:"Ciao Esteban — ho trovato la tua valigia. Si trova qui:\n\n",
       tag:"Etichetta bagaglio"},
   pt:{label:"Português",found:"Encontrada",
-      pitch:"Obrigado por a ter apanhado. Envie-me uma mensagem e vou buscá-la — não precisa de me dar nenhum dado seu.",
+      pitch:"Obrigado por a ter apanhado. Envie-me uma mensagem e vou buscá-la, onde quer que esteja.",
       wa:"Escrever no WhatsApp",fastest:"Mais rápido",call:"Ligar",mail:"E-mail",
       waText:"Olá Esteban — encontrei a sua mala.",
       mailSubject:"Encontrei a sua mala",
       mailBody:"Olá Esteban — encontrei a sua mala. Ela está aqui:\n\n",
       tag:"Etiqueta de bagagem"},
   nl:{label:"Nederlands",found:"Gevonden",
-      pitch:"Bedankt dat je hem hebt opgepakt. Stuur me één bericht en ik kom hem halen — je hoeft geen gegevens van jezelf te geven.",
+      pitch:"Bedankt dat je hem hebt opgepakt. Stuur me een bericht en ik kom hem halen, waar je ook bent.",
       wa:"Stuur een WhatsApp",fastest:"Snelst",call:"Bellen",mail:"E-mail",
       waText:"Hallo Esteban — ik heb je koffer gevonden.",
       mailSubject:"Ik heb je koffer gevonden",
       mailBody:"Hallo Esteban — ik heb je koffer gevonden. Hier is hij:\n\n",
       tag:"Bagagelabel"},
   pl:{label:"Polski",found:"Znaleziona",
-      pitch:"Dziękuję za podniesienie jej. Wyślij mi jedną wiadomość, a przyjadę po nią — nie musisz podawać żadnych swoich danych.",
+      pitch:"Dziękuję za podniesienie jej. Napisz do mnie, a przyjadę po nią, gdziekolwiek jesteś.",
       wa:"Napisz na WhatsAppie",fastest:"Najszybciej",call:"Zadzwoń",mail:"E-mail",
       waText:"Cześć Esteban — znalazłem Twoją walizkę.",
       mailSubject:"Znalazłem Twoją walizkę",
       mailBody:"Cześć Esteban — znalazłem Twoją walizkę. Jest tutaj:\n\n",
       tag:"Przywieszka bagażowa"},
   tr:{label:"Türkçe",found:"Bulundu",
-      pitch:"Aldığınız için teşekkürler. Bana tek bir mesaj atın, gelip alırım — kendinize ait hiçbir bilgi vermeniz gerekmiyor.",
+      pitch:"Aldığınız için teşekkürler. Bana bir mesaj atın, nerede olursanız olun gelip alırım.",
       wa:"WhatsApp'tan yaz",fastest:"En hızlı",call:"Ara",mail:"E-posta",
       waText:"Merhaba Esteban — valizinizi buldum.",
       mailSubject:"Valizinizi buldum",
       mailBody:"Merhaba Esteban — valizinizi buldum. Şu anda burada:\n\n",
       tag:"Bagaj etiketi"},
   ru:{label:"Русский",found:"Найден",
-      pitch:"Спасибо, что подобрали. Напишите мне одно сообщение, и я приеду за ним — свои данные сообщать не нужно.",
+      pitch:"Спасибо, что подобрали. Напишите мне, и я приеду за ним, где бы вы ни были.",
       wa:"Написать в WhatsApp",fastest:"Быстрее всего",call:"Позвонить",mail:"Эл. почта",
       waText:"Здравствуйте, Esteban — я нашёл ваш чемодан.",
       mailSubject:"Я нашёл ваш чемодан",
       mailBody:"Здравствуйте, Esteban — я нашёл ваш чемодан. Он находится здесь:\n\n",
       tag:"Багажная бирка"},
   ar:{label:"العربية",found:"وُجدت",rtl:true,
-      pitch:"شكرًا لأنك التقطتها. أرسل لي رسالة واحدة وسآتي لأخذها — لا حاجة لأن تعطيني أي من بياناتك.",
+      pitch:"شكرًا لأنك التقطتها. أرسل لي رسالة وسآتي لأخذها، أينما كنت.",
       wa:"راسلني على واتساب",fastest:"الأسرع",call:"اتصل",mail:"البريد الإلكتروني",
       waText:"مرحبًا Esteban — لقد وجدت حقيبتك.",
       mailSubject:"لقد وجدت حقيبتك",
       mailBody:"مرحبًا Esteban — لقد وجدت حقيبتك. إنها هنا:\n\n",
       tag:"بطاقة الأمتعة"},
   zh:{label:"中文",found:"已找到",
-      pitch:"谢谢你把它捡起来。给我发一条消息，我就来取 —— 你不需要提供任何个人信息。",
+      pitch:"谢谢你把它捡起来。给我发条消息，你在哪儿我就去哪儿取。",
       wa:"用 WhatsApp 联系",fastest:"最快",call:"打电话",mail:"电子邮件",
       waText:"你好 Esteban，我找到了你的行李箱。",
       mailSubject:"我找到了你的行李箱",
       mailBody:"你好 Esteban，我找到了你的行李箱。它在这里：\n\n",
       tag:"行李牌"},
   ja:{label:"日本語",found:"発見",
-      pitch:"拾っていただきありがとうございます。メッセージを一通いただければ受け取りに伺います。ご自身の情報をお伝えいただく必要はありません。",
+      pitch:"拾っていただきありがとうございます。メッセージをいただければ、どこへでも受け取りに伺います。",
       wa:"WhatsAppで連絡",fastest:"最も早い",call:"電話する",mail:"メール",
       waText:"Estebanさん、スーツケースを見つけました。",
       mailSubject:"スーツケースを見つけました",
       mailBody:"Estebanさん、スーツケースを見つけました。今ここにあります:\n\n",
       tag:"手荷物タグ"},
   ko:{label:"한국어",found:"발견됨",
-      pitch:"주워 주셔서 감사합니다. 메시지 한 통만 보내 주시면 제가 가지러 가겠습니다 — 본인 정보는 알려 주지 않아도 됩니다.",
+      pitch:"주워 주셔서 감사합니다. 메시지 한 통 보내 주시면 어디든 찾아가겠습니다.",
       wa:"WhatsApp으로 연락",fastest:"가장 빠름",call:"전화하기",mail:"이메일",
       waText:"Esteban님, 캐리어를 찾았습니다.",
       mailSubject:"캐리어를 찾았습니다",
