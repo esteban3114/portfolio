@@ -107,15 +107,22 @@ or English speaker, doing me a favour. Everything follows from that.
   — weight, width, tracking — not from a downloaded face.
 - **Actions live in the bottom half.** Thumb zone, one-handed, no scroll needed
   to reach the primary action (`100dvh`, safe-area insets respected).
-- **The orange is a field, not the page background.** `html` and `body` are
-  `--stock`; the orange lives on `.field`, which wraps the bar and the headline.
-  `theme-color` matches the panel too. This matters on iPhone: the strip behind
-  Safari's bottom toolbar is painted from the *page* background, so orange on
-  `body` shows as a band under the address bar, below the pale panel. Putting the
-  orange on a child confines it, and the bottom of the screen stays continuous
-  with the panel whatever Safari decides `100dvh` means. Verified on an iPhone
-  after two attempts — the first, setting the canvas colour on `html` alone,
-  did not take. Don't collapse `.field` back into `body`.
+- **The two edge strips need two different mechanisms.** iOS Safari paints both
+  the strip under the status bar and the strip behind the bottom toolbar from the
+  *page background* — not from the nearest child, and not from `theme-color`
+  (setting that to the panel colour left the top orange anyway). One background
+  cannot be orange at the top and pale at the bottom, so:
+  - `html, body` stay `--signal`, which handles the top.
+  - `.panel` carries `box-shadow: 0 100vh 0 var(--stock)`, extending its own
+    colour downwards past the bottom of the page box. A shadow costs nothing in
+    layout and starts exactly at the panel's edge, so nothing has to guess where
+    the split falls. The wide layout sets `box-shadow: none`, where the panel
+    floats as a card and the orange is meant to surround it.
+
+  Three attempts got here: canvas colour on `html` alone did nothing; moving the
+  orange onto `.field` and the pale onto the page fixed the bottom and broke the
+  top. `.field` is kept because it states the two-field composition in the
+  markup, but the page background is what the phone actually reads.
 - **WhatsApp ranks first.** It's free internationally and it's text, so a finder
   who shares no language with me can still make contact — and the message is
   pre-filled in their own language, so they only have to hit send.

@@ -9,9 +9,10 @@
      scanning the tag on the bag, not found by accident. -->
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
-<!-- Matches the pale panel, not the orange field: on a phone the browser
-     chrome sits against the bottom of the page, and that is the panel. -->
-<meta name="theme-color" content="#EAE6DC">
+<!-- Matches the orange field. On iOS this does not appear to drive either
+     edge strip — the page background does — but where it is honoured, the
+     top of the page is what the browser chrome sits against. -->
+<meta name="theme-color" content="#D25A22">
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23D25A22'/><rect x='9' y='11' width='14' height='12' rx='2' fill='none' stroke='%231B1310' stroke-width='2.4'/><path d='M13 11V8h6v3' fill='none' stroke='%231B1310' stroke-width='2.4'/></svg>">
 
@@ -45,12 +46,14 @@ html{-webkit-text-size-adjust:100%;}
    [hidden]{display:none}. Needed for the contact-mode switch. */
 [hidden]{display:none !important;}
 
-/* The orange is a field (.field below), not the page background. Both
-   html and body carry the panel's colour, so whatever iOS Safari does
-   with dvh and the strip behind its bottom toolbar, the bottom of the
-   screen stays continuous with the panel. Setting the orange on body
-   put a band of it under the Safari address bar. */
-html,body{background:var(--stock);}
+/* iOS Safari paints BOTH edge strips — under the status bar at the top,
+   and behind the bottom toolbar — from the page background, not from the
+   nearest child. One colour cannot serve both: the top must match the
+   orange field, the bottom must match the pale panel.
+   So the page stays orange for the top, and the panel extends its own
+   colour downwards with a box-shadow to cover the bottom. Anchoring that
+   to the panel's own edge means no guessing where the split falls. */
+html,body{background:var(--signal);}
 
 body{
   min-height:100dvh;
@@ -212,6 +215,11 @@ a:focus-visible,select:focus-visible{
   display:flex;
   flex-direction:column;
   gap:.6rem;
+  /* Carries the panel colour past the bottom of the page box, covering the
+     strip behind the iOS toolbar and the home indicator. A shadow rather
+     than height so it costs nothing in layout, and it starts exactly at
+     the panel's edge. Removed in the wide layout, where the panel floats. */
+  box-shadow:0 100vh 0 var(--stock);
 }
 
 .act{
@@ -284,10 +292,14 @@ a:focus-visible,select:focus-visible{
 /* Wider screens: hold the composition instead of stretching it. The panel
    becomes a floating card, so the orange goes back to being the ground. */
 @media (min-width:620px){
-  html,body{background:var(--signal);}
   body{align-items:center;}
   .field{width:100%;max-width:34rem;background:none;}
-  .panel{width:100%;max-width:34rem;border-radius:14px;margin-bottom:var(--pad);}
+  .panel{
+    width:100%;max-width:34rem;
+    border-radius:14px;
+    margin-bottom:var(--pad);
+    box-shadow:none;
+  }
   .head{padding-block:3rem;}
 }
 
