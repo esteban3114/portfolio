@@ -107,22 +107,27 @@ or English speaker, doing me a favour. Everything follows from that.
   — weight, width, tracking — not from a downloaded face.
 - **Actions live in the bottom half.** Thumb zone, one-handed, no scroll needed
   to reach the primary action (`100dvh`, safe-area insets respected).
-- **The two edge strips need two different mechanisms.** iOS Safari paints both
-  the strip under the status bar and the strip behind the bottom toolbar from the
-  *page background* — not from the nearest child, and not from `theme-color`
-  (setting that to the panel colour left the top orange anyway). One background
-  cannot be orange at the top and pale at the bottom, so:
-  - `html, body` stay `--signal`, which handles the top.
-  - `.panel` carries `box-shadow: 0 100vh 0 var(--stock)`, extending its own
-    colour downwards past the bottom of the page box. A shadow costs nothing in
-    layout and starts exactly at the panel's edge, so nothing has to guess where
-    the split falls. The wide layout sets `box-shadow: none`, where the panel
-    floats as a card and the orange is meant to surround it.
+- **The panel floats; it does not touch the bottom edge.** This is the one thing
+  in the layout that is driven by the platform rather than the brief, and it
+  cost four attempts on a real iPhone to establish why:
 
-  Three attempts got here: canvas colour on `html` alone did nothing; moving the
-  orange onto `.field` and the pale onto the page fixed the bottom and broke the
-  top. `.field` is kept because it states the two-field composition in the
-  markup, but the page background is what the phone actually reads.
+  iOS Safari paints the strip under the status bar *and* the strip behind the
+  bottom toolbar from the **page background**. Nothing in the document can reach
+  those strips — not a child element's background, not `box-shadow`, not
+  `position: fixed` — and `theme-color` does not drive them either (it was set
+  to the panel colour while the top still rendered orange). So the page
+  background can be orange at the top or pale at the bottom, never both, and a
+  panel flush to the bottom edge always leaves a mismatched band under the
+  address bar.
+
+  Rather than hunt for a fourth workaround, the panel became a card with
+  `margin: 0 var(--pad) calc(var(--safe-b) + var(--pad))`. Now the orange
+  surrounds it on every side, the page background is orange everywhere and
+  correct at both strips, and the mobile and wide layouts are the same
+  composition. Keeping the actions off the very bottom edge also keeps them
+  clear of the home indicator.
+
+  Don't reinstate a full-bleed panel. It cannot be made to work.
 - **WhatsApp ranks first.** It's free internationally and it's text, so a finder
   who shares no language with me can still make contact — and the message is
   pre-filled in their own language, so they only have to hit send.

@@ -9,9 +9,7 @@
      scanning the tag on the bag, not found by accident. -->
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
-<!-- Matches the orange field. On iOS this does not appear to drive either
-     edge strip — the page background does — but where it is honoured, the
-     top of the page is what the browser chrome sits against. -->
+<!-- The field surrounds everything, so the browser chrome matches it. -->
 <meta name="theme-color" content="#D25A22">
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23D25A22'/><rect x='9' y='11' width='14' height='12' rx='2' fill='none' stroke='%231B1310' stroke-width='2.4'/><path d='M13 11V8h6v3' fill='none' stroke='%231B1310' stroke-width='2.4'/></svg>">
@@ -46,13 +44,10 @@ html{-webkit-text-size-adjust:100%;}
    [hidden]{display:none}. Needed for the contact-mode switch. */
 [hidden]{display:none !important;}
 
-/* iOS Safari paints BOTH edge strips — under the status bar at the top,
-   and behind the bottom toolbar — from the page background, not from the
-   nearest child. One colour cannot serve both: the top must match the
-   orange field, the bottom must match the pale panel.
-   So the page stays orange for the top, and the panel extends its own
-   colour downwards with a box-shadow to cover the bottom. Anchoring that
-   to the panel's own edge means no guessing where the split falls. */
+/* The page background is what paints the strips behind the iOS status bar
+   and toolbar, so it has to be the colour that surrounds everything: the
+   orange field. The panel floats on it rather than touching either edge —
+   see .panel. */
 html,body{background:var(--signal);}
 
 body{
@@ -206,20 +201,23 @@ a:focus-visible,select:focus-visible{
 }
 
 /* ── Lower field: the tag stock, in the thumb zone ───────── */
+/* A card lifted off the bottom edge, not a slab flush to it.
+   iOS Safari paints the strips behind its chrome from the page background
+   and nothing in the document can reach them — not a shadow, not a fixed
+   element. So a panel touching the bottom would require the page
+   background to be orange at the top and pale at the bottom at once,
+   which is impossible. Floating the panel makes the orange around it the
+   composition rather than a defect, matches the wide layout, and keeps
+   the actions clear of the home indicator. */
 .panel{
   flex:0 0 auto;
   background:var(--stock);
-  border-start-start-radius:14px;
-  border-start-end-radius:14px;
-  padding:var(--pad) var(--pad) calc(var(--safe-b) + 1rem);
+  border-radius:14px;
+  padding:var(--pad);
+  margin:0 var(--pad) calc(var(--safe-b) + var(--pad));
   display:flex;
   flex-direction:column;
   gap:.6rem;
-  /* Carries the panel colour past the bottom of the page box, covering the
-     strip behind the iOS toolbar and the home indicator. A shadow rather
-     than height so it costs nothing in layout, and it starts exactly at
-     the panel's edge. Removed in the wide layout, where the panel floats. */
-  box-shadow:0 100vh 0 var(--stock);
 }
 
 .act{
@@ -294,12 +292,7 @@ a:focus-visible,select:focus-visible{
 @media (min-width:620px){
   body{align-items:center;}
   .field{width:100%;max-width:34rem;background:none;}
-  .panel{
-    width:100%;max-width:34rem;
-    border-radius:14px;
-    margin-bottom:var(--pad);
-    box-shadow:none;
-  }
+  .panel{width:100%;max-width:34rem;margin-inline:0;}
   .head{padding-block:3rem;}
 }
 
