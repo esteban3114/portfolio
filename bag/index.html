@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Found this bag? · este-dls.com</title>
+
+<!-- Kept out of search results: this is meant to be reached by
+     scanning the tag on the bag, not found by accident. -->
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#D25A22">
+<meta name="color-scheme" content="only light">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23D25A22'/><rect x='9' y='11' width='14' height='12' rx='2' fill='none' stroke='%231B1310' stroke-width='2.4'/><path d='M13 11V8h6v3' fill='none' stroke='%231B1310' stroke-width='2.4'/></svg>">
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Tokens. One fixed palette, deliberately: this is a signal
+   object. It looks the same in daylight, at night, in any OS
+   theme — like the hi-vis label it is descended from.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --signal:#D25A22;
+  --ink:#1B1310;
+  --stock:#EAE6DC;
+  --rule:rgba(27,19,16,.24);
+  --ghost:rgba(27,19,16,.62);
+
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,"Roboto Mono","DejaVu Sans Mono",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI Variable Display","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+
+  --pad:clamp(1.25rem,6vw,2.5rem);
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+
+/* .act sets display:flex, which would beat the UA stylesheet's
+   [hidden]{display:none}. Needed for the contact-mode switch. */
+[hidden]{display:none !important;}
+
+body{
+  min-height:100dvh;
+  background:var(--signal);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:17px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  display:flex;
+  flex-direction:column;
+}
+
+/* One shared focus treatment. Legible on both grounds. */
+a:focus-visible,select:focus-visible{
+  outline:3px solid var(--ink);
+  outline-offset:3px;
+  border-radius:2px;
+}
+.panel a:focus-visible{outline-color:var(--ink);}
+
+/* ── Utility bar ─────────────────────────────────────────── */
+.bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:calc(var(--safe-t) + .75rem) var(--pad) 0;
+}
+.bar__mark{
+  font-family:var(--mono);
+  font-size:.7rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ghost);
+}
+
+.lang{position:relative;display:flex;align-items:center;}
+.lang__select{
+  appearance:none;-webkit-appearance:none;
+  font-family:var(--mono);
+  font-size:.7rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink);
+  background:transparent;
+  border:1.5px solid var(--rule);
+  border-radius:2px;
+  padding:.7rem 2rem .7rem .7rem;
+  min-height:44px;
+  cursor:pointer;
+}
+.lang__caret{
+  position:absolute;
+  inset-inline-end:.7rem;
+  width:0;height:0;
+  border-inline:4px solid transparent;
+  border-top:5px solid var(--ink);
+  pointer-events:none;
+}
+
+/* ── Upper field: the signature ──────────────────────────── */
+.head{
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:1.5rem;
+  padding:2rem var(--pad);
+}
+
+/* The routing strip, lifted off a real bag tag. Origin node is
+   the situation; destination node is the person. The elbow is
+   the journey the bag still has to make. */
+.route{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:.9rem;
+  padding-bottom:2.4rem;
+}
+.route__node{
+  font-family:var(--mono);
+  font-size:.78rem;
+  font-weight:600;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.route__h{
+  flex:1 1 auto;
+  height:2px;
+  background:var(--ink);
+  transform:scaleX(0);
+  transform-origin:left center;
+  animation:draw-h .5s cubic-bezier(.65,0,.35,1) .15s forwards;
+}
+[dir="rtl"] .route__h{transform-origin:right center;}
+.route__v{
+  position:absolute;
+  inset-inline-end:0;
+  top:calc(50% - 1.2rem);
+  width:2px;
+  height:2.4rem;
+  background:var(--ink);
+  transform:scaleY(0);
+  transform-origin:top center;
+  animation:draw-v .28s cubic-bezier(.65,0,.35,1) .62s forwards;
+}
+.route__v::after{
+  content:"";
+  position:absolute;
+  bottom:-1px;
+  inset-inline-start:-4px;
+  width:0;height:0;
+  border-inline:5px solid transparent;
+  border-top:7px solid var(--ink);
+}
+
+.name{
+  margin:0;
+  font-size:clamp(3.25rem,17vw,6.5rem);
+  font-weight:800;
+  line-height:.88;
+  letter-spacing:-.04em;
+  text-wrap:balance;
+  opacity:0;
+  animation:rise .5s cubic-bezier(.2,.8,.3,1) .8s forwards;
+}
+.pitch{
+  margin:0;
+  max-width:34ch;
+  color:var(--ink);
+  opacity:0;
+  animation:rise .5s cubic-bezier(.2,.8,.3,1) .96s forwards;
+}
+
+@keyframes draw-h{to{transform:scaleX(1);}}
+@keyframes draw-v{to{transform:scaleY(1);}}
+@keyframes rise{
+  from{opacity:0;transform:translateY(.6rem);}
+  to{opacity:1;transform:none;}
+}
+
+/* ── Lower field: the tag stock, in the thumb zone ───────── */
+.panel{
+  flex:0 0 auto;
+  background:var(--stock);
+  border-start-start-radius:14px;
+  border-start-end-radius:14px;
+  padding:var(--pad) var(--pad) calc(var(--safe-b) + 1rem);
+  display:flex;
+  flex-direction:column;
+  gap:.6rem;
+}
+
+.act{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  min-height:60px;
+  padding:.9rem 1.1rem;
+  border:2px solid transparent;
+  border-radius:8px;
+  text-decoration:none;
+  color:var(--ink);
+  font-weight:600;
+  transition:transform .12s ease;
+}
+.act:active{transform:scale(.985);}
+
+.act--wa{background:var(--ink);color:var(--stock);}
+.act--call{background:transparent;border-color:var(--ink);}
+.act--mail{
+  background:transparent;
+  min-height:52px;
+  font-weight:500;
+  color:var(--ghost);
+  border-top:1.5px solid var(--rule);
+  border-radius:0;
+  margin-top:.4rem;
+  padding-inline:.2rem;
+}
+
+.act__meta{
+  font-family:var(--mono);
+  font-size:.72rem;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-variant-numeric:tabular-nums;
+  opacity:.72;
+  white-space:nowrap;
+}
+.act--call .act__meta{
+  font-size:.82rem;
+  letter-spacing:.06em;
+  text-transform:none;
+  opacity:1;
+}
+
+/* ── Username mode ───────────────────────────────────────────
+   No deep link exists for WhatsApp usernames, so the handle is
+   presented as something to copy, not something to tap through.
+   Mono, because it is a string to be transcribed exactly. */
+.handle{display:flex;flex-direction:column;gap:.55rem;}
+.handle__label{font-weight:600;}
+.handle__copy{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  width:100%;
+  min-height:64px;
+  padding:.9rem 1.1rem;
+  background:var(--ink);
+  color:var(--stock);
+  border:2px solid var(--ink);
+  border-radius:8px;
+  font:inherit;
+  text-align:start;
+  cursor:pointer;
+  transition:transform .12s ease;
+}
+.handle__copy:active{transform:scale(.985);}
+.handle__name{
+  font-family:var(--mono);
+  font-size:1.15rem;
+  font-weight:600;
+  letter-spacing:.01em;
+  overflow-wrap:anywhere;
+}
+.handle__hint{
+  font-family:var(--mono);
+  font-size:.68rem;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  opacity:.72;
+  white-space:nowrap;
+}
+.handle__how{
+  margin:0;
+  font-size:.92rem;
+  color:var(--ghost);
+  max-width:34ch;
+}
+
+.foot{
+  font-family:var(--mono);
+  font-size:.66rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--ghost);
+  padding-top:.5rem;
+}
+
+/* Wider screens: hold the composition instead of stretching it. */
+@media (min-width:620px){
+  body{align-items:center;}
+  .bar,.head,.panel{width:100%;max-width:34rem;}
+  .panel{border-radius:14px;margin-bottom:var(--pad);}
+  .head{padding-block:3rem;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .route__h,.route__v,.name,.pitch{animation:none;opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span class="bar__mark">este-dls.com</span>
+  <span class="lang">
+    <select class="lang__select" id="lang" aria-label="Language"></select>
+    <span class="lang__caret" aria-hidden="true"></span>
+  </span>
+</header>
+
+<main class="head">
+  <div class="route" aria-hidden="true">
+    <span class="route__node" id="routeNode">Found</span>
+    <span class="route__h"></span>
+    <span class="route__v"></span>
+  </div>
+  <h1 class="name" id="name">Esteban</h1>
+  <p class="pitch" id="pitch"></p>
+</main>
+
+<div class="panel">
+  <!-- MODE "phone": one tap, but the number is published. -->
+  <a class="act act--wa" id="waLink" rel="noreferrer" hidden>
+    <span id="waLabel"></span>
+    <span class="act__meta" id="waMeta"></span>
+  </a>
+  <a class="act act--call" id="callLink" rel="noreferrer" hidden>
+    <span id="callLabel"></span>
+    <span class="act__meta" id="callMeta"></span>
+  </a>
+
+  <!-- MODE "username": nothing personal on the page, one extra step. -->
+  <div class="handle" id="handleBlock" hidden>
+    <span class="handle__label" id="handleLabel"></span>
+    <button class="handle__copy" type="button" id="handleCopy">
+      <span class="handle__name" id="handleName"></span>
+      <span class="handle__hint" id="handleHint"></span>
+    </button>
+    <p class="handle__how" id="handleHow"></p>
+  </div>
+
+  <a class="act act--mail" id="mailLink" rel="noreferrer">
+    <span id="mailLabel"></span>
+    <span class="act__meta" aria-hidden="true">&#8599;</span>
+  </a>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   EDIT ONLY THIS BLOCK.
+
+   MODE picks how the finder reaches me on WhatsApp:
+
+   "phone"    — one tap via wa.me. Fastest for the finder, but
+                the number is published and will eventually be
+                scraped.
+   "username" — nothing personal on the page at all. WhatsApp
+                has no deep link for usernames, so the handle is
+                shown to copy and paste into WhatsApp's search.
+                Costs the finder two extra steps.
+                ⚠ Leave the WhatsApp "username key" (PIN) OFF.
+                With it on, a stranger who has the username
+                still cannot message me, which defeats the page.
+
+   phone / whatsapp must be E.164 (leading +, no spaces).
+   Links are assembled at runtime, so no tel:/mailto: string
+   sits in the served HTML for naive address harvesters to
+   regex out. That is a speed bump, not real protection —
+   see the note in the README.
+   ═══════════════════════════════════════════════════════════ */
+var MODE = "username";   /* "phone" | "username" */
+
+/* ⚠ This whole block ships to the browser whatever MODE says.
+   The phone fields below are unused in "username" mode — leave
+   them as placeholders. Putting the real number here would
+   publish it in the page source even though nothing renders it. */
+var CONTACT = {
+  name:         "Esteban",
+  phone:        "+33600000000",
+  phoneDisplay: "+33 6 00 00 00 00",
+  whatsapp:     "+33600000000",
+  username:     "este.dls",
+  email:        "este3112008@gmail.com"
+};
+
+/* ── Copy. English is the fallback for any unlisted language. ── */
+var STRINGS = {
+  en:{label:"English",found:"Found",
+      pitch:"Thanks for picking it up. Send me one message and I'll come and get it — you don't need to give me any of your own details.",
+      wa:"Message on WhatsApp",fastest:"Fastest",call:"Call",mail:"Email",
+      waText:"Hi Esteban — I've found your bag.",
+      mailSubject:"I found your bag",
+      mailBody:"Hi Esteban — I've found your bag. Here's where it is:\n\n",
+      how:"Open WhatsApp, then search this name.",copy:"Tap to copy",copied:"Copied",
+      tag:"Luggage tag"},
+  fr:{label:"Français",found:"Trouvée",
+      pitch:"Merci de l'avoir ramassée. Un seul message et je viens la chercher — vous n'avez aucune information à me donner.",
+      wa:"Écrire sur WhatsApp",fastest:"Le plus rapide",call:"Appeler",mail:"E-mail",
+      waText:"Bonjour Esteban — j'ai trouvé votre valise.",
+      mailSubject:"J'ai trouvé votre valise",
+      mailBody:"Bonjour Esteban — j'ai trouvé votre valise. Voici où elle se trouve :\n\n",
+      how:"Ouvrez WhatsApp, puis cherchez ce nom.",copy:"Appuyez pour copier",copied:"Copié",
+      tag:"Étiquette bagage"},
+  es:{label:"Español",found:"Encontrada",
+      pitch:"Gracias por recogerla. Envíame un solo mensaje y voy a buscarla — no necesitas darme ningún dato tuyo.",
+      wa:"Escribir por WhatsApp",fastest:"Lo más rápido",call:"Llamar",mail:"Correo",
+      waText:"Hola Esteban — he encontrado tu maleta.",
+      mailSubject:"He encontrado tu maleta",
+      mailBody:"Hola Esteban — he encontrado tu maleta. Está aquí:\n\n",
+      how:"Abre WhatsApp y busca este nombre.",copy:"Toca para copiar",copied:"Copiado",
+      tag:"Etiqueta de equipaje"},
+  de:{label:"Deutsch",found:"Gefunden",
+      pitch:"Danke, dass Sie ihn aufgehoben haben. Eine Nachricht genügt, dann hole ich ihn ab — Sie müssen mir keine Ihrer Daten geben.",
+      wa:"Auf WhatsApp schreiben",fastest:"Am schnellsten",call:"Anrufen",mail:"E-Mail",
+      waText:"Hallo Esteban — ich habe Ihren Koffer gefunden.",
+      mailSubject:"Ich habe Ihren Koffer gefunden",
+      mailBody:"Hallo Esteban — ich habe Ihren Koffer gefunden. Er ist hier:\n\n",
+      how:"Öffnen Sie WhatsApp und suchen Sie diesen Namen.",copy:"Zum Kopieren tippen",copied:"Kopiert",
+      tag:"Gepäckanhänger"},
+  it:{label:"Italiano",found:"Trovata",
+      pitch:"Grazie per averla raccolta. Mandami un solo messaggio e vengo a prenderla — non devi darmi nessun tuo dato.",
+      wa:"Scrivi su WhatsApp",fastest:"Il più rapido",call:"Chiama",mail:"Email",
+      waText:"Ciao Esteban — ho trovato la tua valigia.",
+      mailSubject:"Ho trovato la tua valigia",
+      mailBody:"Ciao Esteban — ho trovato la tua valigia. Si trova qui:\n\n",
+      how:"Apri WhatsApp e cerca questo nome.",copy:"Tocca per copiare",copied:"Copiato",
+      tag:"Etichetta bagaglio"},
+  pt:{label:"Português",found:"Encontrada",
+      pitch:"Obrigado por a ter apanhado. Envie-me uma mensagem e vou buscá-la — não precisa de me dar nenhum dado seu.",
+      wa:"Escrever no WhatsApp",fastest:"Mais rápido",call:"Ligar",mail:"E-mail",
+      waText:"Olá Esteban — encontrei a sua mala.",
+      mailSubject:"Encontrei a sua mala",
+      mailBody:"Olá Esteban — encontrei a sua mala. Ela está aqui:\n\n",
+      how:"Abra o WhatsApp e procure este nome.",copy:"Toque para copiar",copied:"Copiado",
+      tag:"Etiqueta de bagagem"},
+  nl:{label:"Nederlands",found:"Gevonden",
+      pitch:"Bedankt dat je hem hebt opgepakt. Stuur me één bericht en ik kom hem halen — je hoeft geen gegevens van jezelf te geven.",
+      wa:"Stuur een WhatsApp",fastest:"Snelst",call:"Bellen",mail:"E-mail",
+      waText:"Hallo Esteban — ik heb je koffer gevonden.",
+      mailSubject:"Ik heb je koffer gevonden",
+      mailBody:"Hallo Esteban — ik heb je koffer gevonden. Hier is hij:\n\n",
+      how:"Open WhatsApp en zoek deze naam.",copy:"Tik om te kopiëren",copied:"Gekopieerd",
+      tag:"Bagagelabel"},
+  pl:{label:"Polski",found:"Znaleziona",
+      pitch:"Dziękuję za podniesienie jej. Wyślij mi jedną wiadomość, a przyjadę po nią — nie musisz podawać żadnych swoich danych.",
+      wa:"Napisz na WhatsAppie",fastest:"Najszybciej",call:"Zadzwoń",mail:"E-mail",
+      waText:"Cześć Esteban — znalazłem Twoją walizkę.",
+      mailSubject:"Znalazłem Twoją walizkę",
+      mailBody:"Cześć Esteban — znalazłem Twoją walizkę. Jest tutaj:\n\n",
+      how:"Otwórz WhatsApp i wyszukaj tę nazwę.",copy:"Dotknij, aby skopiować",copied:"Skopiowano",
+      tag:"Przywieszka bagażowa"},
+  tr:{label:"Türkçe",found:"Bulundu",
+      pitch:"Aldığınız için teşekkürler. Bana tek bir mesaj atın, gelip alırım — kendinize ait hiçbir bilgi vermeniz gerekmiyor.",
+      wa:"WhatsApp'tan yaz",fastest:"En hızlı",call:"Ara",mail:"E-posta",
+      waText:"Merhaba Esteban — valizinizi buldum.",
+      mailSubject:"Valizinizi buldum",
+      mailBody:"Merhaba Esteban — valizinizi buldum. Şu anda burada:\n\n",
+      how:"WhatsApp'ı açın ve bu adı arayın.",copy:"Kopyalamak için dokunun",copied:"Kopyalandı",
+      tag:"Bagaj etiketi"},
+  ru:{label:"Русский",found:"Найден",
+      pitch:"Спасибо, что подобрали. Напишите мне одно сообщение, и я приеду за ним — свои данные сообщать не нужно.",
+      wa:"Написать в WhatsApp",fastest:"Быстрее всего",call:"Позвонить",mail:"Эл. почта",
+      waText:"Здравствуйте, Esteban — я нашёл ваш чемодан.",
+      mailSubject:"Я нашёл ваш чемодан",
+      mailBody:"Здравствуйте, Esteban — я нашёл ваш чемодан. Он находится здесь:\n\n",
+      how:"Откройте WhatsApp и найдите это имя.",copy:"Нажмите, чтобы скопировать",copied:"Скопировано",
+      tag:"Багажная бирка"},
+  ar:{label:"العربية",found:"وُجدت",rtl:true,
+      pitch:"شكرًا لأنك التقطتها. أرسل لي رسالة واحدة وسآتي لأخذها — لا حاجة لأن تعطيني أي من بياناتك.",
+      wa:"راسلني على واتساب",fastest:"الأسرع",call:"اتصل",mail:"البريد الإلكتروني",
+      waText:"مرحبًا Esteban — لقد وجدت حقيبتك.",
+      mailSubject:"لقد وجدت حقيبتك",
+      mailBody:"مرحبًا Esteban — لقد وجدت حقيبتك. إنها هنا:\n\n",
+      how:"افتح واتساب وابحث عن هذا الاسم.",copy:"اضغط للنسخ",copied:"تم النسخ",
+      tag:"بطاقة الأمتعة"},
+  zh:{label:"中文",found:"已找到",
+      pitch:"谢谢你把它捡起来。给我发一条消息，我就来取 —— 你不需要提供任何个人信息。",
+      wa:"用 WhatsApp 联系",fastest:"最快",call:"打电话",mail:"电子邮件",
+      waText:"你好 Esteban，我找到了你的行李箱。",
+      mailSubject:"我找到了你的行李箱",
+      mailBody:"你好 Esteban，我找到了你的行李箱。它在这里：\n\n",
+      how:"打开 WhatsApp，搜索这个名字。",copy:"点按复制",copied:"已复制",
+      tag:"行李牌"},
+  ja:{label:"日本語",found:"発見",
+      pitch:"拾っていただきありがとうございます。メッセージを一通いただければ受け取りに伺います。ご自身の情報をお伝えいただく必要はありません。",
+      wa:"WhatsAppで連絡",fastest:"最も早い",call:"電話する",mail:"メール",
+      waText:"Estebanさん、スーツケースを見つけました。",
+      mailSubject:"スーツケースを見つけました",
+      mailBody:"Estebanさん、スーツケースを見つけました。今ここにあります:\n\n",
+      how:"WhatsAppを開いて、この名前を検索してください。",copy:"タップしてコピー",copied:"コピーしました",
+      tag:"手荷物タグ"},
+  ko:{label:"한국어",found:"발견됨",
+      pitch:"주워 주셔서 감사합니다. 메시지 한 통만 보내 주시면 제가 가지러 가겠습니다 — 본인 정보는 알려 주지 않아도 됩니다.",
+      wa:"WhatsApp으로 연락",fastest:"가장 빠름",call:"전화하기",mail:"이메일",
+      waText:"Esteban님, 캐리어를 찾았습니다.",
+      mailSubject:"캐리어를 찾았습니다",
+      mailBody:"Esteban님, 캐리어를 찾았습니다. 지금 여기에 있습니다:\n\n",
+      how:"WhatsApp을 열고 이 이름을 검색하세요.",copy:"탭하여 복사",copied:"복사됨",
+      tag:"수하물 태그"}
+};
+
+var DEFAULT_LANG = "en";
+
+/* Match the phone's language list against what we actually have.
+   navigator.languages is ordered by the user's own preference, so
+   the first hit wins; region subtags (pt-BR, zh-Hant) collapse to
+   the base language rather than falling all the way back. */
+function detect(){
+  var wanted = navigator.languages && navigator.languages.length
+    ? navigator.languages
+    : [navigator.language || DEFAULT_LANG];
+  for (var i = 0; i < wanted.length; i++){
+    var base = String(wanted[i]).toLowerCase().split("-")[0];
+    if (STRINGS[base]) return base;
+  }
+  return DEFAULT_LANG;
+}
+
+function buildPicker(){
+  var sel = document.getElementById("lang");
+  Object.keys(STRINGS).forEach(function(code){
+    var opt = document.createElement("option");
+    opt.value = code;
+    opt.textContent = STRINGS[code].label;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener("change", function(){ apply(sel.value); });
+}
+
+/* Copy the handle. If the clipboard is unavailable — insecure
+   context, older browser — the handle is still plain readable
+   text on screen, so the finder can transcribe it by hand. */
+function wireCopy(){
+  var btn  = document.getElementById("handleCopy");
+  var hint = document.getElementById("handleHint");
+  btn.addEventListener("click", function(){
+    var t = STRINGS[document.documentElement.lang] || STRINGS[DEFAULT_LANG];
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText(CONTACT.username).then(function(){
+      hint.textContent = t.copied;
+      setTimeout(function(){ hint.textContent = t.copy; }, 2000);
+    });
+  });
+}
+
+function apply(code){
+  var t = STRINGS[code] || STRINGS[DEFAULT_LANG];
+  var byUsername = MODE === "username";
+
+  document.documentElement.lang = code;
+  document.documentElement.dir = t.rtl ? "rtl" : "ltr";
+  document.getElementById("lang").value = code;
+
+  document.getElementById("name").textContent = CONTACT.name;
+  document.getElementById("routeNode").textContent = t.found;
+  document.getElementById("pitch").textContent = t.pitch;
+  document.getElementById("foot").textContent = "este-dls.com · " + t.tag;
+
+  document.getElementById("waLink").hidden      = byUsername;
+  document.getElementById("callLink").hidden    = byUsername;
+  document.getElementById("handleBlock").hidden = !byUsername;
+
+  if (byUsername){
+    document.getElementById("handleLabel").textContent = t.wa;
+    document.getElementById("handleName").textContent  = CONTACT.username;
+    document.getElementById("handleHint").textContent  = t.copy;
+    document.getElementById("handleHow").textContent   = t.how;
+  } else {
+    var digits = CONTACT.whatsapp.replace(/[^\d]/g, "");
+    document.getElementById("waLabel").textContent = t.wa;
+    document.getElementById("waMeta").textContent  = t.fastest;
+    document.getElementById("waLink").href =
+      "https://wa.me/" + digits + "?text=" + encodeURIComponent(t.waText);
+
+    document.getElementById("callLabel").textContent = t.call;
+    document.getElementById("callMeta").textContent  = CONTACT.phoneDisplay;
+    document.getElementById("callLink").href = "tel:" + CONTACT.phone;
+  }
+
+  document.getElementById("mailLabel").textContent = t.mail;
+  document.getElementById("mailLink").href = "mailto:" + CONTACT.email +
+    "?subject=" + encodeURIComponent(t.mailSubject) +
+    "&body="    + encodeURIComponent(t.mailBody);
+}
+
+buildPicker();
+wireCopy();
+apply(detect());
+</script>
+
+</body>
+</html>

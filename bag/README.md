@@ -1,0 +1,129 @@
+# este-dls.com — luggage recovery page
+
+A single static page. Someone finds the bag, scans the QR on the tag, and gets
+one tap to reach me. No build step, no dependencies, no network requests.
+
+## Before deploying
+
+Edit the config at the top of the `<script>` in `index.html`:
+
+```js
+var MODE = "username";   // "phone" | "username"  — currently: username
+
+var CONTACT = {
+  name:         "Esteban",
+  phone:        "+33600000000",      // unused in username mode — leave as-is
+  phoneDisplay: "+33 6 00 00 00 00", // unused in username mode — leave as-is
+  whatsapp:     "+33600000000",      // unused in username mode — leave as-is
+  username:     "este.dls",          // WhatsApp username, no @
+  email:        "este3112008@gmail.com"
+};
+```
+
+The whole config ships to the browser whichever mode is active, so the phone
+fields must stay placeholders while `MODE` is `"username"` — a real number there
+would be published in the page source even though nothing renders it.
+
+Use a **dedicated email alias**. This address ends up on a public page and will
+attract spam; an alias keeps it out of the main inbox and can be thrown away.
+
+## Choosing MODE
+
+Both modes are fully built. This is the one real trade-off in the page.
+
+**`"phone"`** — the finder gets one tap to WhatsApp via `wa.me`, and the number
+is also shown so they can call. Fastest possible path, which matters when a
+stranger is doing a favour and may give up. Cost: the number is published and
+will eventually be scraped, and a phone number is painful to change.
+
+**`"username"`** — nothing personal appears on the page at all. WhatsApp has no
+deep-link format for usernames (`wa.me/` only accepts phone numbers, and the
+official announcement says only that "people will need to know your exact
+username to contact you for the first time"), so the handle is shown as a
+tap-to-copy block with one line of instruction. Cost: two extra steps for the
+finder — copy, switch to WhatsApp, paste into search.
+
+> **If you use `"username"`, leave the WhatsApp "username key" (the PIN) OFF.**
+> The key is optional, and WhatsApp suggests enabling it precisely when you
+> publish your username on a website — but with it on, a stranger who has your
+> username *still* cannot message you without the PIN. The two settings are
+> contradictory for this page. Publishing the username without the key is still
+> a real gain over publishing a number: nothing leaks that ties to you
+> elsewhere, no automated calls or SMS are possible, and a username takes ten
+> seconds to change.
+
+Usernames only started rolling out in mid-2026, so verify the handle is actually
+claimed and reachable from a phone that has never messaged you before, ideally
+someone else's, before trusting `"username"` on a real bag.
+
+## Where it lives, and the QR code
+
+Deployed at **https://este-dls.com/bag/** — the `bag/` directory of the
+`esteban3114/portfolio` repo, which GitHub Pages serves verbatim on push to
+`master`.
+
+An unguessable path (`/b/k7f2qm9x/`) was considered and rejected: **the repo is
+public**, so anyone can read the path straight out of it. It would have hidden
+nothing while making the URL impossible to remember or regenerate a QR for. A
+readable path is the honest choice here.
+
+What actually limits exposure:
+
+- `MODE = "username"` — no phone number is on the page at all.
+- The email was already published on `este-dls.com` (the portfolio's CONTACT
+  section) before this page existed, so this adds no new exposure.
+- `noindex, nofollow, noarchive` keeps the page out of search results, which is
+  about not being *found by accident*, not about secrecy.
+
+Generate the QR from the full URL including the trailing slash. Print it large
+enough to scan in bad light — 3 cm minimum, with a white quiet zone around it.
+Error-correction level Q or H so it still reads once the tag is scuffed.
+
+The URL never has to change. If the username or email changes, edit the page —
+don't reprint the tag.
+
+## Design notes
+
+The finder is a stranger in a hurry, one hand on the bag, probably not a French
+or English speaker, doing me a favour. Everything follows from that.
+
+- **One fixed palette, no dark mode.** This is a signal object like the hi-vis
+  label it descends from; it looks the same in every condition. High-contrast
+  warm orange also stays readable in direct sunlight, which is where a bag
+  abandoned on a kerb actually gets found.
+- **System fonts on purpose.** The page has to paint instantly on hostile
+  airport wifi and never flash a fallback. The character comes from the setting
+  — weight, width, tracking — not from a downloaded face.
+- **Actions live in the bottom half.** Thumb zone, one-handed, no scroll needed
+  to reach the primary action (`100dvh`, safe-area insets respected).
+- **WhatsApp ranks first, and says why.** It's free internationally and it's
+  text, so a finder who shares no language with me can still make contact. In
+  `"phone"` mode the message is pre-filled in their own language — they only
+  have to hit send. In `"username"` mode there is no link to pre-fill, so the
+  handle is set in mono: it's a string to be transcribed exactly, and mono is
+  already the printed-tag voice used elsewhere on the page.
+- **The routing strip is the one bold move.** `FOUND ─────┐` elbowing down into
+  the name is the origin/destination device off a real bag tag, encoding the
+  journey the bag still has to make. It draws once on load, then nothing else on
+  the page ever moves. `prefers-reduced-motion` skips it.
+
+## Languages
+
+Detected from `navigator.languages`, first supported match wins, English is the
+fallback. Region subtags collapse to the base language, so `pt-BR` gets
+Portuguese rather than falling through to English. A picker in the corner lets
+the finder override it.
+
+English, French, Spanish, German, Italian, Portuguese, Dutch, Polish, Turkish,
+Russian, Arabic (RTL), Chinese, Japanese, Korean.
+
+To add one, copy any entry in `STRINGS` and translate the values. The key is a
+two-letter ISO 639-1 code; add `rtl:true` for right-to-left scripts.
+
+## Possible additions
+
+- A photo of the bag, so the finder can confirm they've matched the right owner
+  when several bags are involved. Inline it as a data URI to keep the page
+  self-contained.
+- A second page on another path for a wallet or a laptop sleeve — same file,
+  different `CONTACT` and a different QR.

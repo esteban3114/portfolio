@@ -25,6 +25,9 @@ portfolio/
 ├── index.html          ← Point d'entrée : styles CSS inline + chargement React/Babel
 ├── app.jsx             ← Logique principale React (sections, typewriter, boot, navigation)
 ├── tweaks-panel.jsx    ← Panel de personnalisation (accent, scanlines, vitesse)
+├── bag/                ← Page de récupération de bagage (este-dls.com/bag/)
+│   ├── index.html      ← Autonome : aucun rapport avec le design du portfolio
+│   └── README.md       ← Config, choix de MODE, notes de design, QR
 ├── CNAME               ← "este-dls.com"
 ├── package.json        ← npm, type: module, scripts: test / serve
 ├── playwright.config.js← baseURL: https://este-dls.com
@@ -143,9 +146,30 @@ Groupes de tests :
 
 ---
 
-## 📌 État actuel (mis à jour : 2026-05-29)
+## 🧳 Page bagage — `bag/`
+
+Page **totalement indépendante** du portfolio : elle ne partage ni son CSS, ni sa
+stack, ni son design system. Ne pas lui appliquer les conventions ci-dessus.
+
+- **Rôle** : un inconnu trouve la valise, scanne le QR sur l'étiquette, et joint
+  Esteban en un minimum d'étapes. Le public n'est pas Esteban.
+- **Autonome** : un seul fichier, zéro dépendance, zéro requête réseau, fontes
+  système — elle doit s'afficher instantanément sur un wifi d'aéroport.
+- **14 langues** détectées via `navigator.languages`, anglais par défaut, arabe
+  en RTL. Sélecteur manuel dans le coin.
+- **`MODE`** en haut du `<script>` : `"username"` (actuel, rien de personnel sur
+  la page) ou `"phone"`. ⚠ En mode username, laisser la **username key WhatsApp
+  (PIN) désactivée**, sinon un inconnu ne peut pas écrire.
+- **Palette fixe, pas de dark mode** — c'est un objet de signalisation.
+
+Détail complet dans `bag/README.md`. Copie de travail : `../este-dls/`.
+
+---
+
+## 📌 État actuel (mis à jour : 2026-07-30)
 
 ### ✅ Fait
+- Page de récupération de bagage sur `este-dls.com/bag/` (mode username)
 - Design terminal Bloomberg complet (boot, tabs, typewriter, ticker, news)
 - Curseur clignotant persistant après fin d'animation typewriter
 - Liens cliquables GitHub + email dans CONTACT
