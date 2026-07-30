@@ -224,7 +224,8 @@ a:focus-visible,select:focus-visible{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:1rem;
+  flex-wrap:wrap;
+  gap:.25rem 1rem;
   min-height:60px;
   padding:.9rem 1.1rem;
   border:2px solid transparent;
@@ -268,14 +269,16 @@ a:focus-visible,select:focus-visible{
 
 /* In username mode the meta slot carries the handle rather than a
    ranking label, so the finder can see who they are about to
-   message. Same mono treatment the phone number used to get. */
+   message. Same mono treatment the phone number used to get.
+   Never break it: a username split across two lines reads as two
+   different strings. If the row runs short the whole handle drops to
+   its own line instead, which .act's flex-wrap allows. */
 .act--wa .act__meta--handle{
   font-size:.82rem;
   letter-spacing:.04em;
   text-transform:none;
   opacity:.8;
-  overflow-wrap:anywhere;
-  white-space:normal;
+  white-space:nowrap;
 }
 
 .foot{
