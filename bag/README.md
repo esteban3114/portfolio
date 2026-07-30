@@ -29,19 +29,29 @@ attract spam; an alias keeps it out of the main inbox and can be thrown away.
 
 ## Choosing MODE
 
-Both modes are fully built. This is the one real trade-off in the page.
+Both modes give the finder **one tap**. `wa.me` accepts a username directly —
+undocumented, but verified against WhatsApp's own redirect:
 
-**`"phone"`** — the finder gets one tap to WhatsApp via `wa.me`, and the number
-is also shown so they can call. Fastest possible path, which matters when a
-stranger is doing a favour and may give up. Cost: the number is published and
-will eventually be scraped, and a phone number is painful to change.
+```
+wa.me/este.dls      → api.whatsapp.com/send/?text=…&username=este.dls&type=username
+wa.me/33612345678   → api.whatsapp.com/send/?phone=33612345678&text=…&type=phone_number
+```
 
-**`"username"`** — nothing personal appears on the page at all. WhatsApp has no
-deep-link format for usernames (`wa.me/` only accepts phone numbers, and the
-official announcement says only that "people will need to know your exact
-username to contact you for the first time"), so the handle is shown as a
-tap-to-copy block with one line of instruction. Cost: two extra steps for the
-finder — copy, switch to WhatsApp, paste into search.
+Two distinct branches, and the prefilled `?text=` survives on both. So the
+username costs the finder nothing in friction.
+
+**`"username"`** (current) — one tap, and no phone number anywhere on the page.
+The handle sits in the button's meta slot so the finder can see who they are
+about to message.
+
+**`"phone"`** — one tap plus a number to ring, which helps a finder with no
+WhatsApp. Cost: the number is published, will eventually be scraped, and a phone
+number is painful to change.
+
+> `wa.me` classifies the *shape* of the string; it does not check that the handle
+> exists. `wa.me/zzz.not.a.real.handle` also returns `type=username`. So the
+> redirect proves the link format works, not that `este.dls` is reachable —
+> that needs the end-to-end test below.
 
 > **If you use `"username"`, leave the WhatsApp "username key" (the PIN) OFF.**
 > The key is optional, and WhatsApp suggests enabling it precisely when you
@@ -52,9 +62,10 @@ finder — copy, switch to WhatsApp, paste into search.
 > elsewhere, no automated calls or SMS are possible, and a username takes ten
 > seconds to change.
 
-Usernames only started rolling out in mid-2026, so verify the handle is actually
-claimed and reachable from a phone that has never messaged you before, ideally
-someone else's, before trusting `"username"` on a real bag.
+Usernames only started rolling out in mid-2026, so before trusting `"username"`
+on a real bag: open `https://wa.me/este.dls` from a phone that has never
+messaged you, ideally someone else's, and check the chat actually opens on you.
+If it doesn't, the username key is on — turn it off.
 
 ## Where it lives, and the QR code
 
@@ -96,12 +107,9 @@ or English speaker, doing me a favour. Everything follows from that.
   — weight, width, tracking — not from a downloaded face.
 - **Actions live in the bottom half.** Thumb zone, one-handed, no scroll needed
   to reach the primary action (`100dvh`, safe-area insets respected).
-- **WhatsApp ranks first, and says why.** It's free internationally and it's
-  text, so a finder who shares no language with me can still make contact. In
-  `"phone"` mode the message is pre-filled in their own language — they only
-  have to hit send. In `"username"` mode there is no link to pre-fill, so the
-  handle is set in mono: it's a string to be transcribed exactly, and mono is
-  already the printed-tag voice used elsewhere on the page.
+- **WhatsApp ranks first.** It's free internationally and it's text, so a finder
+  who shares no language with me can still make contact — and the message is
+  pre-filled in their own language, so they only have to hit send.
 - **The routing strip is the one bold move.** `FOUND ─────┐` elbowing down into
   the name is the origin/destination device off a real bag tag, encoding the
   journey the bag still has to make. It draws once on load, then nothing else on

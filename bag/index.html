@@ -243,51 +243,16 @@ a:focus-visible,select:focus-visible{
   opacity:1;
 }
 
-/* ── Username mode ───────────────────────────────────────────
-   No deep link exists for WhatsApp usernames, so the handle is
-   presented as something to copy, not something to tap through.
-   Mono, because it is a string to be transcribed exactly. */
-.handle{display:flex;flex-direction:column;gap:.55rem;}
-.handle__label{font-weight:600;}
-.handle__copy{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:1rem;
-  width:100%;
-  min-height:64px;
-  padding:.9rem 1.1rem;
-  background:var(--ink);
-  color:var(--stock);
-  border:2px solid var(--ink);
-  border-radius:8px;
-  font:inherit;
-  text-align:start;
-  cursor:pointer;
-  transition:transform .12s ease;
-}
-.handle__copy:active{transform:scale(.985);}
-.handle__name{
-  font-family:var(--mono);
-  font-size:1.15rem;
-  font-weight:600;
-  letter-spacing:.01em;
+/* In username mode the meta slot carries the handle rather than a
+   ranking label, so the finder can see who they are about to
+   message. Same mono treatment the phone number used to get. */
+.act--wa .act__meta--handle{
+  font-size:.82rem;
+  letter-spacing:.04em;
+  text-transform:none;
+  opacity:.8;
   overflow-wrap:anywhere;
-}
-.handle__hint{
-  font-family:var(--mono);
-  font-size:.68rem;
-  font-weight:500;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  opacity:.72;
-  white-space:nowrap;
-}
-.handle__how{
-  margin:0;
-  font-size:.92rem;
-  color:var(--ghost);
-  max-width:34ch;
+  white-space:normal;
 }
 
 .foot{
@@ -333,25 +298,16 @@ a:focus-visible,select:focus-visible{
 </main>
 
 <div class="panel">
-  <!-- MODE "phone": one tap, but the number is published. -->
-  <a class="act act--wa" id="waLink" rel="noreferrer" hidden>
+  <!-- One tap in both modes. Only the target and the meta differ. -->
+  <a class="act act--wa" id="waLink" rel="noreferrer">
     <span id="waLabel"></span>
     <span class="act__meta" id="waMeta"></span>
   </a>
+  <!-- MODE "phone" only: a number to ring. -->
   <a class="act act--call" id="callLink" rel="noreferrer" hidden>
     <span id="callLabel"></span>
     <span class="act__meta" id="callMeta"></span>
   </a>
-
-  <!-- MODE "username": nothing personal on the page, one extra step. -->
-  <div class="handle" id="handleBlock" hidden>
-    <span class="handle__label" id="handleLabel"></span>
-    <button class="handle__copy" type="button" id="handleCopy">
-      <span class="handle__name" id="handleName"></span>
-      <span class="handle__hint" id="handleHint"></span>
-    </button>
-    <p class="handle__how" id="handleHow"></p>
-  </div>
 
   <a class="act act--mail" id="mailLink" rel="noreferrer">
     <span id="mailLabel"></span>
@@ -366,16 +322,17 @@ a:focus-visible,select:focus-visible{
 
    MODE picks how the finder reaches me on WhatsApp:
 
-   "phone"    — one tap via wa.me. Fastest for the finder, but
-                the number is published and will eventually be
-                scraped.
-   "username" — nothing personal on the page at all. WhatsApp
-                has no deep link for usernames, so the handle is
-                shown to copy and paste into WhatsApp's search.
-                Costs the finder two extra steps.
+   "username" — one tap, and nothing personal on the page. wa.me
+                accepts a username directly (verified: it routes
+                to type=username and keeps the prefilled ?text=).
+                No call button, because there is no number to
+                publish — that is the point.
                 ⚠ Leave the WhatsApp "username key" (PIN) OFF.
                 With it on, a stranger who has the username
                 still cannot message me, which defeats the page.
+   "phone"    — one tap via wa.me plus a number to ring, for a
+                finder with no WhatsApp. Cost: the number is
+                published and will eventually be scraped.
 
    phone / whatsapp must be E.164 (leading +, no spaces).
    Links are assembled at runtime, so no tel:/mailto: string
@@ -406,7 +363,6 @@ var STRINGS = {
       waText:"Hi Esteban — I've found your bag.",
       mailSubject:"I found your bag",
       mailBody:"Hi Esteban — I've found your bag. Here's where it is:\n\n",
-      how:"Open WhatsApp, then search this name.",copy:"Tap to copy",copied:"Copied",
       tag:"Luggage tag"},
   fr:{label:"Français",found:"Trouvée",
       pitch:"Merci de l'avoir ramassée. Un seul message et je viens la chercher — vous n'avez aucune information à me donner.",
@@ -414,7 +370,6 @@ var STRINGS = {
       waText:"Bonjour Esteban — j'ai trouvé votre valise.",
       mailSubject:"J'ai trouvé votre valise",
       mailBody:"Bonjour Esteban — j'ai trouvé votre valise. Voici où elle se trouve :\n\n",
-      how:"Ouvrez WhatsApp, puis cherchez ce nom.",copy:"Appuyez pour copier",copied:"Copié",
       tag:"Étiquette bagage"},
   es:{label:"Español",found:"Encontrada",
       pitch:"Gracias por recogerla. Envíame un solo mensaje y voy a buscarla — no necesitas darme ningún dato tuyo.",
@@ -422,7 +377,6 @@ var STRINGS = {
       waText:"Hola Esteban — he encontrado tu maleta.",
       mailSubject:"He encontrado tu maleta",
       mailBody:"Hola Esteban — he encontrado tu maleta. Está aquí:\n\n",
-      how:"Abre WhatsApp y busca este nombre.",copy:"Toca para copiar",copied:"Copiado",
       tag:"Etiqueta de equipaje"},
   de:{label:"Deutsch",found:"Gefunden",
       pitch:"Danke, dass Sie ihn aufgehoben haben. Eine Nachricht genügt, dann hole ich ihn ab — Sie müssen mir keine Ihrer Daten geben.",
@@ -430,7 +384,6 @@ var STRINGS = {
       waText:"Hallo Esteban — ich habe Ihren Koffer gefunden.",
       mailSubject:"Ich habe Ihren Koffer gefunden",
       mailBody:"Hallo Esteban — ich habe Ihren Koffer gefunden. Er ist hier:\n\n",
-      how:"Öffnen Sie WhatsApp und suchen Sie diesen Namen.",copy:"Zum Kopieren tippen",copied:"Kopiert",
       tag:"Gepäckanhänger"},
   it:{label:"Italiano",found:"Trovata",
       pitch:"Grazie per averla raccolta. Mandami un solo messaggio e vengo a prenderla — non devi darmi nessun tuo dato.",
@@ -438,7 +391,6 @@ var STRINGS = {
       waText:"Ciao Esteban — ho trovato la tua valigia.",
       mailSubject:"Ho trovato la tua valigia",
       mailBody:"Ciao Esteban — ho trovato la tua valigia. Si trova qui:\n\n",
-      how:"Apri WhatsApp e cerca questo nome.",copy:"Tocca per copiare",copied:"Copiato",
       tag:"Etichetta bagaglio"},
   pt:{label:"Português",found:"Encontrada",
       pitch:"Obrigado por a ter apanhado. Envie-me uma mensagem e vou buscá-la — não precisa de me dar nenhum dado seu.",
@@ -446,7 +398,6 @@ var STRINGS = {
       waText:"Olá Esteban — encontrei a sua mala.",
       mailSubject:"Encontrei a sua mala",
       mailBody:"Olá Esteban — encontrei a sua mala. Ela está aqui:\n\n",
-      how:"Abra o WhatsApp e procure este nome.",copy:"Toque para copiar",copied:"Copiado",
       tag:"Etiqueta de bagagem"},
   nl:{label:"Nederlands",found:"Gevonden",
       pitch:"Bedankt dat je hem hebt opgepakt. Stuur me één bericht en ik kom hem halen — je hoeft geen gegevens van jezelf te geven.",
@@ -454,7 +405,6 @@ var STRINGS = {
       waText:"Hallo Esteban — ik heb je koffer gevonden.",
       mailSubject:"Ik heb je koffer gevonden",
       mailBody:"Hallo Esteban — ik heb je koffer gevonden. Hier is hij:\n\n",
-      how:"Open WhatsApp en zoek deze naam.",copy:"Tik om te kopiëren",copied:"Gekopieerd",
       tag:"Bagagelabel"},
   pl:{label:"Polski",found:"Znaleziona",
       pitch:"Dziękuję za podniesienie jej. Wyślij mi jedną wiadomość, a przyjadę po nią — nie musisz podawać żadnych swoich danych.",
@@ -462,7 +412,6 @@ var STRINGS = {
       waText:"Cześć Esteban — znalazłem Twoją walizkę.",
       mailSubject:"Znalazłem Twoją walizkę",
       mailBody:"Cześć Esteban — znalazłem Twoją walizkę. Jest tutaj:\n\n",
-      how:"Otwórz WhatsApp i wyszukaj tę nazwę.",copy:"Dotknij, aby skopiować",copied:"Skopiowano",
       tag:"Przywieszka bagażowa"},
   tr:{label:"Türkçe",found:"Bulundu",
       pitch:"Aldığınız için teşekkürler. Bana tek bir mesaj atın, gelip alırım — kendinize ait hiçbir bilgi vermeniz gerekmiyor.",
@@ -470,7 +419,6 @@ var STRINGS = {
       waText:"Merhaba Esteban — valizinizi buldum.",
       mailSubject:"Valizinizi buldum",
       mailBody:"Merhaba Esteban — valizinizi buldum. Şu anda burada:\n\n",
-      how:"WhatsApp'ı açın ve bu adı arayın.",copy:"Kopyalamak için dokunun",copied:"Kopyalandı",
       tag:"Bagaj etiketi"},
   ru:{label:"Русский",found:"Найден",
       pitch:"Спасибо, что подобрали. Напишите мне одно сообщение, и я приеду за ним — свои данные сообщать не нужно.",
@@ -478,7 +426,6 @@ var STRINGS = {
       waText:"Здравствуйте, Esteban — я нашёл ваш чемодан.",
       mailSubject:"Я нашёл ваш чемодан",
       mailBody:"Здравствуйте, Esteban — я нашёл ваш чемодан. Он находится здесь:\n\n",
-      how:"Откройте WhatsApp и найдите это имя.",copy:"Нажмите, чтобы скопировать",copied:"Скопировано",
       tag:"Багажная бирка"},
   ar:{label:"العربية",found:"وُجدت",rtl:true,
       pitch:"شكرًا لأنك التقطتها. أرسل لي رسالة واحدة وسآتي لأخذها — لا حاجة لأن تعطيني أي من بياناتك.",
@@ -486,7 +433,6 @@ var STRINGS = {
       waText:"مرحبًا Esteban — لقد وجدت حقيبتك.",
       mailSubject:"لقد وجدت حقيبتك",
       mailBody:"مرحبًا Esteban — لقد وجدت حقيبتك. إنها هنا:\n\n",
-      how:"افتح واتساب وابحث عن هذا الاسم.",copy:"اضغط للنسخ",copied:"تم النسخ",
       tag:"بطاقة الأمتعة"},
   zh:{label:"中文",found:"已找到",
       pitch:"谢谢你把它捡起来。给我发一条消息，我就来取 —— 你不需要提供任何个人信息。",
@@ -494,7 +440,6 @@ var STRINGS = {
       waText:"你好 Esteban，我找到了你的行李箱。",
       mailSubject:"我找到了你的行李箱",
       mailBody:"你好 Esteban，我找到了你的行李箱。它在这里：\n\n",
-      how:"打开 WhatsApp，搜索这个名字。",copy:"点按复制",copied:"已复制",
       tag:"行李牌"},
   ja:{label:"日本語",found:"発見",
       pitch:"拾っていただきありがとうございます。メッセージを一通いただければ受け取りに伺います。ご自身の情報をお伝えいただく必要はありません。",
@@ -502,7 +447,6 @@ var STRINGS = {
       waText:"Estebanさん、スーツケースを見つけました。",
       mailSubject:"スーツケースを見つけました",
       mailBody:"Estebanさん、スーツケースを見つけました。今ここにあります:\n\n",
-      how:"WhatsAppを開いて、この名前を検索してください。",copy:"タップしてコピー",copied:"コピーしました",
       tag:"手荷物タグ"},
   ko:{label:"한국어",found:"발견됨",
       pitch:"주워 주셔서 감사합니다. 메시지 한 통만 보내 주시면 제가 가지러 가겠습니다 — 본인 정보는 알려 주지 않아도 됩니다.",
@@ -510,7 +454,6 @@ var STRINGS = {
       waText:"Esteban님, 캐리어를 찾았습니다.",
       mailSubject:"캐리어를 찾았습니다",
       mailBody:"Esteban님, 캐리어를 찾았습니다. 지금 여기에 있습니다:\n\n",
-      how:"WhatsApp을 열고 이 이름을 검색하세요.",copy:"탭하여 복사",copied:"복사됨",
       tag:"수하물 태그"}
 };
 
@@ -542,22 +485,6 @@ function buildPicker(){
   sel.addEventListener("change", function(){ apply(sel.value); });
 }
 
-/* Copy the handle. If the clipboard is unavailable — insecure
-   context, older browser — the handle is still plain readable
-   text on screen, so the finder can transcribe it by hand. */
-function wireCopy(){
-  var btn  = document.getElementById("handleCopy");
-  var hint = document.getElementById("handleHint");
-  btn.addEventListener("click", function(){
-    var t = STRINGS[document.documentElement.lang] || STRINGS[DEFAULT_LANG];
-    if (!navigator.clipboard) return;
-    navigator.clipboard.writeText(CONTACT.username).then(function(){
-      hint.textContent = t.copied;
-      setTimeout(function(){ hint.textContent = t.copy; }, 2000);
-    });
-  });
-}
-
 function apply(code){
   var t = STRINGS[code] || STRINGS[DEFAULT_LANG];
   var byUsername = MODE === "username";
@@ -571,22 +498,24 @@ function apply(code){
   document.getElementById("pitch").textContent = t.pitch;
   document.getElementById("foot").textContent = "este-dls.com · " + t.tag;
 
-  document.getElementById("waLink").hidden      = byUsername;
-  document.getElementById("callLink").hidden    = byUsername;
-  document.getElementById("handleBlock").hidden = !byUsername;
+  /* wa.me routes a username and a number down separate branches
+     (type=username vs type=phone_number) and keeps ?text= on both,
+     so the finder gets one tap either way. */
+  var target = byUsername
+    ? CONTACT.username
+    : CONTACT.whatsapp.replace(/[^\d]/g, "");
+  document.getElementById("waLabel").textContent = t.wa;
+  document.getElementById("waLink").href =
+    "https://wa.me/" + target + "?text=" + encodeURIComponent(t.waText);
 
-  if (byUsername){
-    document.getElementById("handleLabel").textContent = t.wa;
-    document.getElementById("handleName").textContent  = CONTACT.username;
-    document.getElementById("handleHint").textContent  = t.copy;
-    document.getElementById("handleHow").textContent   = t.how;
-  } else {
-    var digits = CONTACT.whatsapp.replace(/[^\d]/g, "");
-    document.getElementById("waLabel").textContent = t.wa;
-    document.getElementById("waMeta").textContent  = t.fastest;
-    document.getElementById("waLink").href =
-      "https://wa.me/" + digits + "?text=" + encodeURIComponent(t.waText);
+  /* Username mode shows who the tap reaches; phone mode ranks the
+     button against the call below it. */
+  var waMeta = document.getElementById("waMeta");
+  waMeta.textContent = byUsername ? CONTACT.username : t.fastest;
+  waMeta.classList.toggle("act__meta--handle", byUsername);
 
+  document.getElementById("callLink").hidden = byUsername;
+  if (!byUsername){
     document.getElementById("callLabel").textContent = t.call;
     document.getElementById("callMeta").textContent  = CONTACT.phoneDisplay;
     document.getElementById("callLink").href = "tel:" + CONTACT.phone;
@@ -599,7 +528,6 @@ function apply(code){
 }
 
 buildPicker();
-wireCopy();
 apply(detect());
 </script>
 

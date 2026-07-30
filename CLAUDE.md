@@ -157,9 +157,12 @@ stack, ni son design system. Ne pas lui appliquer les conventions ci-dessus.
   système — elle doit s'afficher instantanément sur un wifi d'aéroport.
 - **14 langues** détectées via `navigator.languages`, anglais par défaut, arabe
   en RTL. Sélecteur manuel dans le coin.
-- **`MODE`** en haut du `<script>` : `"username"` (actuel, rien de personnel sur
-  la page) ou `"phone"`. ⚠ En mode username, laisser la **username key WhatsApp
-  (PIN) désactivée**, sinon un inconnu ne peut pas écrire.
+- **`MODE`** en haut du `<script>` : `"username"` (actuel) ou `"phone"`. Les deux
+  donnent **un seul tap** : `wa.me/<username>` fonctionne (vérifié — le serveur
+  redirige vers `type=username` et conserve le `?text=` prérempli), donc le mode
+  username ne coûte aucune friction et ne publie aucun numéro.
+  ⚠ Laisser la **username key WhatsApp (PIN) désactivée**, sinon un inconnu ne
+  peut pas écrire même avec le bon username.
 - **Palette fixe, pas de dark mode** — c'est un objet de signalisation.
 
 Détail complet dans `bag/README.md`. Copie de travail : `../este-dls/`.
