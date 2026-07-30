@@ -39,24 +39,21 @@
 *,*::before,*::after{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 
-/* The canvas background paints everything outside the body box: behind
-   the browser chrome, the home-indicator strip, and overscroll. The
-   panel is what reaches the bottom of the screen, so the canvas has to
-   be the panel's colour — otherwise an orange band shows under the
-   address bar on iOS. The wide layout overrides this back to orange,
-   where the panel is a floating card. */
-html{
-  -webkit-text-size-adjust:100%;
-  background:var(--stock);
-}
+html{-webkit-text-size-adjust:100%;}
 
 /* .act sets display:flex, which would beat the UA stylesheet's
    [hidden]{display:none}. Needed for the contact-mode switch. */
 [hidden]{display:none !important;}
 
+/* The orange is a field (.field below), not the page background. Both
+   html and body carry the panel's colour, so whatever iOS Safari does
+   with dvh and the strip behind its bottom toolbar, the bottom of the
+   screen stays continuous with the panel. Setting the orange on body
+   put a band of it under the Safari address bar. */
+html,body{background:var(--stock);}
+
 body{
   min-height:100dvh;
-  background:var(--signal);
   color:var(--ink);
   font-family:var(--sans);
   font-size:17px;
@@ -64,6 +61,14 @@ body{
   -webkit-font-smoothing:antialiased;
   display:flex;
   flex-direction:column;
+}
+
+/* Upper field: owns the orange, so it cannot leak past the panel. */
+.field{
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+  background:var(--signal);
 }
 
 /* One shared focus treatment. Legible on both grounds. */
@@ -277,12 +282,12 @@ a:focus-visible,select:focus-visible{
 }
 
 /* Wider screens: hold the composition instead of stretching it. The panel
-   becomes a floating card, so the canvas goes back to the orange field. */
+   becomes a floating card, so the orange goes back to being the ground. */
 @media (min-width:620px){
-  html{background:var(--signal);}
+  html,body{background:var(--signal);}
   body{align-items:center;}
-  .bar,.head,.panel{width:100%;max-width:34rem;}
-  .panel{border-radius:14px;margin-bottom:var(--pad);}
+  .field{width:100%;max-width:34rem;background:none;}
+  .panel{width:100%;max-width:34rem;border-radius:14px;margin-bottom:var(--pad);}
   .head{padding-block:3rem;}
 }
 
@@ -293,6 +298,7 @@ a:focus-visible,select:focus-visible{
 </head>
 <body>
 
+<div class="field">
 <header class="bar">
   <span class="bar__mark">este-dls.com</span>
   <span class="lang">
@@ -310,6 +316,7 @@ a:focus-visible,select:focus-visible{
   <h1 class="name" id="name">Esteban</h1>
   <p class="pitch" id="pitch"></p>
 </main>
+</div>
 
 <div class="panel">
   <!-- One tap in both modes. Only the target and the meta differ. -->

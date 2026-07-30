@@ -107,14 +107,15 @@ or English speaker, doing me a favour. Everything follows from that.
   — weight, width, tracking — not from a downloaded face.
 - **Actions live in the bottom half.** Thumb zone, one-handed, no scroll needed
   to reach the primary action (`100dvh`, safe-area insets respected).
-- **The canvas is the panel's colour, not the field's.** `html` is `--stock` and
-  `theme-color` matches it. Everything outside the `body` box — behind the
-  browser chrome, the iOS home-indicator strip, overscroll — is painted from the
-  canvas, and the element that reaches the bottom of the screen is the pale
-  panel. Leave `html` orange and an orange band appears under the address bar on
-  iPhone. The wide layout flips it back to orange, where the panel floats as a
-  card and the field is supposed to surround it. Don't "simplify" these two
-  declarations into one.
+- **The orange is a field, not the page background.** `html` and `body` are
+  `--stock`; the orange lives on `.field`, which wraps the bar and the headline.
+  `theme-color` matches the panel too. This matters on iPhone: the strip behind
+  Safari's bottom toolbar is painted from the *page* background, so orange on
+  `body` shows as a band under the address bar, below the pale panel. Putting the
+  orange on a child confines it, and the bottom of the screen stays continuous
+  with the panel whatever Safari decides `100dvh` means. Verified on an iPhone
+  after two attempts — the first, setting the canvas colour on `html` alone,
+  did not take. Don't collapse `.field` back into `body`.
 - **WhatsApp ranks first.** It's free internationally and it's text, so a finder
   who shares no language with me can still make contact — and the message is
   pre-filled in their own language, so they only have to hit send.
