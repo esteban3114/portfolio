@@ -37,6 +37,19 @@ portfolio/
 
 ---
 
+## Two versions
+
+- **Terminal** at `/` (React via Babel) and **Poster** at `/poster/` (static HTML, Swiss
+  brutalist print: paper `#f4f4f0`, ink `#111`, one red `#d11a1a`, square corners, light only,
+  self-hosted Archivo Black + IBM Plex Mono in `poster/fonts/`).
+- First visit: `index.html` shows a chooser and holds the terminal back
+  (`html[data-version="choose"]`). Choice stored in `localStorage.estbn_version`.
+- `?version=terminal|poster` on `/` records the choice; a stored `poster` redirects to `/poster/`.
+- Terminal → poster: `V` key, hint-bar link, Tweaks button. Poster → terminal: "Terminal version".
+- `app.jsx` uses CRLF line endings; keep them.
+
+---
+
 ## Design system (inline CSS in index.html)
 
 ```css

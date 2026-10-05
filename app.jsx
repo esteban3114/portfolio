@@ -9,8 +9,8 @@ const PROFILE = {
   name: "Esteban",
   age: "18",
   location: "France",
-  status: "Student / Developer",
-  focus: "Python · Automation · Trading bots",
+  status: "Prépa ECG student",
+  focus: "Study tools · Automation · Trading bots",
   github: "github.com/esteban3114",
   email: "este3112008@gmail.com",
   linkedin: "linkedin.com/in/esteban-de-la-sala",
@@ -40,35 +40,40 @@ const SECTIONS = {
       row("14", "STATUS", PROFILE.status, "val"),
       blank(),
       head("PROFILE"),
-      row("15", "FOCUS", "Python development", "val"),
-      row("16", "SPECIALTY", "Automation / trading bots", "val"),
+      row("15", "TRACK", "Prépa ECG · year 1", "val"),
+      row("16", "FOCUS", "Study tools / automation", "val"),
       row("17", "EXPERIENCE", "Self-taught", "val"),
       row("18", "AVAILABILITY", "OPEN", "pos"),
       blank(),
-      [seg("> ", "num"), seg("18-year-old Python developer building automated", "label")],
-      [seg("  ", "num"), seg("trading systems and Discord tooling. Ships code,", "label")],
-      [seg("  ", "num"), seg("writes tests, deploys to the cloud.", "label")],
+      [seg("> ", "num"), seg("18, first-year prépa ECG student (applied maths,", "label")],
+      [seg("  ", "num"), seg("economics, languages). Self-taught developer:", "label")],
+      [seg("  ", "num"), seg("builds the apps he studies with, and trading bots.", "label")],
     ],
   },
   PROJECTS: {
     code: "PROJECTS",
-    title: "PROJECTS — 2 ACTIVE",
+    title: "PROJECTS — 4 ACTIVE",
     lines: () => [
       [seg("   ", "num"), seg(pad("PROJECT", 20), "colhead"), seg(pad("DETAIL", 28), "colhead"), seg("STATE", "colhead")],
       blank(),
       [seg("21) ", "num"), seg(pad("vadtrade-bot-2", 20), "valbold"), seg(pad("Automated trading bot", 28), "label"), seg("LIVE", "pos")],
       [seg("22) ", "num"), seg(pad("student-os", 20), "valbold"), seg(pad("Student web app", 28), "label"), seg("LIVE", "pos")],
+      [seg("23) ", "num"), seg(pad("drill-maths", 20), "valbold"), seg(pad("Maths drill PWA (ECG)", 28), "label"), seg("LIVE", "pos")],
+      [seg("24) ", "num"), seg(pad("rayon", 20), "valbold"), seg(pad("BnF library book finder", 28), "label"), seg("LIVE", "pos")],
       blank(),
       head("VADTRADE-BOT-2"),
-      row("23", "LANGUAGE", "Python 3.12", "val"),
-      row("24", "FRAMEWORK", "discord.py", "val"),
-      row("25", "DATA / MARKET", "pandas · yfinance · OANDA", "val"),
-      row("26", "DEPLOYMENT", "VPS · 99.9% up", "pos"),
+      row("25", "STACK", "Python 3.12 · discord.py", "val"),
+      row("26", "DATA / MARKET", "pandas · yfinance · OANDA", "val"),
       blank(),
       head("STUDENT-OS"),
-      row("27", "STACK", "SvelteKit · Tailwind", "val"),
-      row("28", "BACKEND", "Supabase", "val"),
-      [seg("29) ", "num"), seg(pad("DEPLOYMENT", 20), "label"), { t: "Vercel ↗", c: "blueval", href: "https://student-os-vdmkrs.vercel.app", target: "_blank" }],
+      row("27", "STACK", "SvelteKit · Tailwind · Supabase", "val"),
+      [seg("28) ", "num"), seg(pad("DEPLOYMENT", 20), "label"), { t: "Vercel ↗", c: "blueval", href: "https://studentos-hq.vercel.app", target: "_blank" }],
+      blank(),
+      head("DRILL-MATHS"),
+      row("29", "TECH", "Vanilla JS · offline PWA", "val"),
+      blank(),
+      head("RAYON"),
+      [seg("30) ", "num"), seg(pad("LIVE", 20), "label"), { t: "rayon.este-dls.com ↗", c: "blueval", href: "https://rayon.este-dls.com", target: "_blank" }],
     ],
   },
   STACK: {
@@ -306,7 +311,7 @@ function TickerLines({ now }) {
         <span className="t-mkt">DEV</span>
         <span className="t-dollar">●</span>
         <span className="t-up">▲ LIVE</span>
-        <span className="t-big">PYTHON DEVELOPER</span>
+        <span className="t-big">STUDENT DEVELOPER</span>
         <span className="t-spark">▁▂▃▅▆▇█</span>
         <span className="t-right">PY 3.12</span>
         <span className="t-right2">1×1</span>
@@ -315,8 +320,8 @@ function TickerLines({ now }) {
         <span className="t2-clock">At {now}</span>
         <span className="t2-d">d</span>
         <span>Age <b>{PROFILE.age}</b></span>
-        <span>Repos <b>7</b></span>
-        <span>Projects <b className="g">1</b></span>
+        <span>Repos <b>10</b></span>
+        <span>Projects <b className="g">4</b></span>
         <span>Stack <b>7</b></span>
         <span>Loc <b>{PROFILE.location}</b></span>
         <span>Status <b className="g">OPEN</b></span>
@@ -340,7 +345,7 @@ function SubBar() {
   return (
     <div className="subbar">
       <span className="sb-name">{PROFILE.name.toUpperCase()}</span>
-      <span className="sb-role">PYTHON DEVELOPER</span>
+      <span className="sb-role">PRÉPA ECG · DEVELOPER</span>
       <span className="sb-id">ID&nbsp;&nbsp;ESTBN-PY312</span>
     </div>
   );
@@ -390,6 +395,7 @@ function HintBar() {
       <span className="hint-sug">Suggested Functions</span>
       <span className="hint-fn"><b>GIT</b> View repositories</span>
       <span className="hint-fn"><b>MAIL</b> Send a message</span>
+      <a className="hint-switch" href="/poster/"><b>V</b> Poster version</a>
       <span className="hint-right">1 WHO · 2 PROJECTS · 3 STACK · 4 CONTACT</span>
     </div>
   );
@@ -438,6 +444,7 @@ function App() {
       if (e.key === "ArrowRight") { setActive((c) => ORDER[(ORDER.indexOf(c) + 1) % ORDER.length]); return; }
       if (e.key === "ArrowLeft") { setActive((c) => ORDER[(ORDER.indexOf(c) - 1 + ORDER.length) % ORDER.length]); return; }
       if (e.key === "t" || e.key === "T") { setTweaksOpen((o) => !o); return; }
+      if (e.key === "v" || e.key === "V") { window.location.href = "/poster/"; return; }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -488,9 +495,17 @@ function App() {
                      onChange={(v) => setTweak("typeSpeed", v)} />
         <TweakSection label="System" />
         <TweakButton label="Replay boot sequence" onClick={() => { sessionStorage.removeItem("estbn_booted"); setBooted(false); setTweaksOpen(false); }} />
+        <TweakButton label="Switch to poster version" onClick={() => { window.location.href = "/poster/"; }} />
       </TweaksPanel>
     </div>
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+/* The version chooser (index.html) holds the terminal back until the visitor picks it. */
+function startTerminal() {
+  if (startTerminal.started) return;
+  startTerminal.started = true;
+  ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+}
+window.estbnStartTerminal = startTerminal;
+if (document.documentElement.dataset.version !== "choose") startTerminal();

@@ -22,9 +22,12 @@
 
 ```
 portfolio/
-├── index.html          ← Point d'entrée : styles CSS inline + chargement React/Babel
+├── index.html          ← Point d'entrée : écran de choix + terminal (CSS inline, React/Babel)
 ├── app.jsx             ← Logique principale React (sections, typewriter, boot, navigation)
 ├── tweaks-panel.jsx    ← Panel de personnalisation (accent, scanlines, vitesse)
+├── poster/             ← Version « Poster » (este-dls.com/poster/), HTML statique
+│   ├── index.html      ← Autonome : CSS inline, aucun JS de rendu
+│   └── fonts/, img/    ← Archivo Black + IBM Plex Mono auto-hébergées, captures des projets
 ├── bag/                ← Page de récupération de bagage (este-dls.com/bag/)
 │   ├── index.html      ← Autonome : aucun rapport avec le design du portfolio
 │   └── README.md       ← Config, choix de MODE, notes de design, QR
@@ -58,6 +61,23 @@ Le CSS est **entièrement inline dans `index.html`**. Variables principales :
 ```
 
 Typographie : **IBM Plex Mono** (Google Fonts). Thème : terminal Bloomberg/trading.
+
+---
+
+## 🔀 Deux versions du site
+
+- **Terminal** (`/`, React) et **Poster** (`/poster/`, style suisse brutaliste : papier
+  `#f4f4f0`, encre `#111`, un seul rouge `#d11a1a`, angles droits, clair seulement).
+- Première visite : `index.html` affiche l'écran de choix (`.chooser`) et retient le
+  terminal (`html[data-version="choose"]`). Le choix est gardé dans
+  `localStorage.estbn_version` (`terminal` | `poster`).
+- Script en tête de `index.html` : `?version=terminal|poster` enregistre le choix ;
+  `poster` déjà choisi → redirection immédiate vers `/poster/`.
+- Visiter `/poster/` vaut choix « poster ». Retour : lien « Terminal version »
+  (`/?version=terminal`). Depuis le terminal : touche `V`, lien de la barre du bas,
+  bouton dans les réglages (T).
+- `app.jsx` ne démarre React qu'après le choix : `window.estbnStartTerminal()`.
+- ⚠ `app.jsx` est en fins de ligne **CRLF** : les garder en éditant.
 
 ---
 
@@ -132,6 +152,11 @@ Groupes de tests :
 - **Tweaks panel** : ouverture via `T`
 - **Contenu** : nom/localisation WHO, github/email CONTACT
 - **Mobile** : pas de scroll horizontal (viewport 390px)
+- **Version chooser** : écran de choix, mémorisation, Poster et retour, touche `V`
+
+Les tests du terminal simulent un visiteur qui a déjà choisi le terminal
+(`addInitScript` → `estbn_version = terminal`). `BASE_URL=http://localhost:…`
+permet de les lancer sur une copie locale (`python3 -m http.server`).
 
 ---
 
@@ -169,9 +194,11 @@ Détail complet dans `bag/README.md`. Copie de travail : `../este-dls/`.
 
 ---
 
-## 📌 État actuel (mis à jour : 2026-07-30)
+## 📌 État actuel (mis à jour : 2026-10-05)
 
 ### ✅ Fait
+- Deux versions au choix (Terminal / Poster) avec écran de choix à la première visite
+- Infos à jour : prépa ECG (1re année), 4 projets (vadtrade-bot-2, StudentOS, drill, Rayon)
 - Page de récupération de bagage sur `este-dls.com/bag/` (mode username)
 - Design terminal Bloomberg complet (boot, tabs, typewriter, ticker, news)
 - Curseur clignotant persistant après fin d'animation typewriter

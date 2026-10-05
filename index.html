@@ -3,6 +3,23 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script>
+  // Two versions of the site: the terminal (this page) and the poster (/poster/).
+  // First visit: show the chooser. After that, go straight to the version picked.
+  (function () {
+    var KEY = "estbn_version", v = null;
+    try {
+      var q = new URLSearchParams(location.search).get("version");
+      if (q === "terminal" || q === "poster") {
+        localStorage.setItem(KEY, q);
+        history.replaceState(null, "", location.pathname + location.hash);
+      }
+      v = localStorage.getItem(KEY);
+    } catch (e) {}
+    if (v === "poster") { location.replace("/poster/"); return; }
+    document.documentElement.dataset.version = v === "terminal" ? "terminal" : "choose";
+  })();
+</script>
 <title>ESTBN — Developer Terminal</title>
 <link rel="canonical" href="https://este-dls.com/" />
 
@@ -12,17 +29,17 @@
 <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=2" />
 <meta name="theme-color" content="#e8a838" />
 
-<meta name="description" content="Esteban — Student &amp; developer from France. Python, automation, trading bots." />
+<meta name="description" content="Esteban, 18, prépa ECG student and self-taught developer from France. Study tools, web apps, trading bots." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://este-dls.com/" />
 <meta property="og:title" content="ESTBN — Developer Terminal" />
-<meta property="og:description" content="Esteban — Student &amp; developer from France. Python, automation, trading bots." />
+<meta property="og:description" content="Esteban, 18, prépa ECG student and self-taught developer from France. Study tools, web apps, trading bots." />
 <meta property="og:image" content="https://este-dls.com/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="ESTBN — Developer Terminal" />
-<meta name="twitter:description" content="Esteban — Student &amp; developer from France. Python, automation, trading bots." />
+<meta name="twitter:description" content="Esteban, 18, prépa ECG student and self-taught developer from France. Study tools, web apps, trading bots." />
 <meta name="twitter:image" content="https://este-dls.com/og-image.png" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -335,6 +352,9 @@
   .hint-fn { color: #b9b9b9; }
   .hint-fn b { color: #ffffff; }
   .hint-right { margin-left: auto; color: var(--dim); }
+  .hint-switch { color: #b9b9b9; text-decoration: none; }
+  .hint-switch b { color: #ffffff; }
+  .hint-switch:hover, .hint-switch:focus-visible { color: var(--accent); }
 
   /* TWEAKS accent swatches */
   .tw-accent-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; }
@@ -384,16 +404,114 @@
 
     /* hint bar — keep minimal */
     .hint { font-size: 11px; gap: 12px; padding: 4px 8px; }
-    .hint-fn { display: none; }
+    .hint-fn, .hint-sug { display: none; }
     .hint-right { font-size: 10px; }
 
     /* boot */
     .boot { padding: 8vh 6vw; }
     .boot-go { font-size: 13px; }
   }
+
+  /* ===== VERSION CHOOSER (first visit) ===== */
+  @font-face {
+    font-family: "Archivo Black";
+    src: url("/poster/fonts/archivo-black.woff2") format("woff2");
+    font-weight: 400;
+    font-display: swap;
+  }
+  html[data-version="choose"] #root { display: none; }
+  html:not([data-version="choose"]) .chooser { display: none; }
+  .chooser {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .ch-bar {
+    grid-column: 1 / -1;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 16px;
+    background: #0a0a0a;
+    border-bottom: 1px solid #222;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .ch-bar span { color: var(--dim); font-weight: 400; }
+  .ch-opt {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: clamp(20px, 5vw, 64px);
+    text-decoration: none;
+    overflow: hidden;
+  }
+  .ch-opt:focus-visible { outline: 3px solid var(--accent); outline-offset: -6px; }
+  .ch-name { display: block; transition: transform 0.2s ease; }
+  .ch-desc { font-size: 14px; line-height: 1.5; max-width: 34ch; letter-spacing: 0; }
+  .ch-go { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .ch-opt:hover .ch-name, .ch-opt:focus-visible .ch-name { transform: translateX(8px); }
+
+  .ch-term { background: #0a0a0a; color: var(--accent); border-right: 1px solid #222; }
+  .ch-term::after {
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0,0,0,0.35) 3px);
+  }
+  .ch-term .ch-name { font-size: clamp(40px, 7vw, 88px); font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+  .ch-term .ch-desc { color: var(--label); }
+  .ch-term .ch-go { color: var(--accent); }
+
+  .ch-poster { background: #f4f4f0; color: #111111; }
+  .ch-poster::before {
+    content: "";
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 12px;
+    background: #d11a1a;
+  }
+  .ch-poster .ch-name {
+    font-family: "Archivo Black", "Arial Black", sans-serif;
+    font-size: clamp(52px, 10vw, 136px);
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    line-height: 0.85;
+  }
+  .ch-poster .ch-go { color: #d11a1a; }
+
+  @media (max-width: 640px) {
+    .chooser { grid-template-columns: 1fr; grid-template-rows: auto 1fr 1fr; }
+    .ch-term { border-right: 0; border-bottom: 1px solid #222; }
+    .ch-bar { font-size: 12px; padding: 8px 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ch-name { transition: none; }
+    .ch-opt:hover .ch-name, .ch-opt:focus-visible .ch-name { transform: none; }
+    .chooser .blink { animation: none; }
+  }
 </style>
 </head>
 <body>
+  <main class="chooser" aria-labelledby="ch-title">
+    <h1 class="ch-bar" id="ch-title">Esteban <span>Pick a version</span></h1>
+    <a class="ch-opt ch-term" href="/?version=terminal" data-choose="terminal">
+      <span class="ch-name">Terminal<span class="blink" aria-hidden="true">_</span></span>
+      <span class="ch-desc">The trading-screen version. Animated, with keyboard shortcuts.</span>
+      <span class="ch-go">Open ›</span>
+    </a>
+    <a class="ch-opt ch-poster" href="/poster/" data-choose="poster">
+      <span class="ch-name">Poster</span>
+      <span class="ch-desc">The print version. Black ink on paper, big type, one red.</span>
+      <span class="ch-go">Open ›</span>
+    </a>
+  </main>
   <div id="root"></div>
 
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -402,5 +520,18 @@
 
   <script type="text/babel" src="tweaks-panel.jsx"></script>
   <script type="text/babel" src="app.jsx"></script>
+  <script>
+    // Chooser: the terminal starts in place, the poster is its own page.
+    (function () {
+      function remember(v) { try { localStorage.setItem("estbn_version", v); } catch (e) {} }
+      document.querySelector('[data-choose="terminal"]').addEventListener("click", function (e) {
+        e.preventDefault();
+        remember("terminal");
+        document.documentElement.dataset.version = "terminal";
+        if (window.estbnStartTerminal) window.estbnStartTerminal();
+      });
+      document.querySelector('[data-choose="poster"]').addEventListener("click", function () { remember("poster"); });
+    })();
+  </script>
 </body>
 </html>
